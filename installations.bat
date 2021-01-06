@@ -1,6 +1,8 @@
 pip install flask
 pip install flask-login
 pip install flask-openid
+pip install flask-migrate
+pip install flask-script
 pip install sqlalchemy
 pip install flask-sqlalchemy
 pip install sqlalchemy-migrate
