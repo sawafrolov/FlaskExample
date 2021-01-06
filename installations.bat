@@ -5,7 +5,6 @@ pip install flask-migrate
 pip install flask-script
 pip install sqlalchemy
 pip install flask-sqlalchemy
-pip install sqlalchemy-migrate
 pip install flask-whooshalchemy
 pip install flask-wtf
 pip install pytz
