@@ -74,6 +74,7 @@ def index():
 @app.route("/user/<username>")
 @login_required
 def user(username):
+    form = EmptyForm()
     user = User.query.filter_by(username=username).first_or_404()
     posts = [
         {
@@ -85,7 +86,7 @@ def user(username):
             "body": "My second post"
         }
     ]
-    return render_template("user.html", user=user, posts=posts)
+    return render_template("user.html", user=user, posts=posts, form=form)
 
 
 @app.route("/edit_profile", methods=["GET", "POST"])
