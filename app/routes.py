@@ -49,13 +49,13 @@ def index():
     posts = [
         {
             "author": {
-                "nickname": "John"
+                "username": "John"
             },
             "body": "Beautiful day in Portland!"
         },
         {
             "author": {
-                "nickname": "Susan"
+                "username": "Susan"
             },
             "body": "The Avengers movie was so cool!"
         }
