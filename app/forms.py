@@ -9,7 +9,8 @@ class EmptyForm(FlaskForm):
 
 
 class PostForm(FlaskForm):
-    post = TextAreaField('post', validators=[DataRequired()])
+    post = TextAreaField('Say something', validators=[DataRequired()])
+    submit = SubmitField('Submit')
 
 
 class LoginForm(FlaskForm):
