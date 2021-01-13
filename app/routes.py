@@ -2,7 +2,8 @@ from flask import render_template, flash, redirect, url_for, request, g
 from flask_login import login_user, logout_user, current_user, login_required
 from datetime import datetime
 from app import app, db
-from app.forms import EmptyForm, PostForm, LoginForm, RegistrationForm, ResetPasswordRequestForm, EditProfileForm
+from app.forms import EmptyForm, PostForm, LoginForm, RegistrationForm,\
+    ResetPasswordRequestForm, ResetPasswordForm, EditProfileForm
 from app.models import User, Post
 from app.email import send_password_reset_email
 
