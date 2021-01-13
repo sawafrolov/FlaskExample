@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_mail import Mail
 import logging
 from logging.handlers import RotatingFileHandler
 
@@ -10,6 +11,7 @@ db = SQLAlchemy(app)
 login = LoginManager()
 login.init_app(app)
 login.login_view = "login"
+mail = Mail(app)
 
 if not app.debug:
     file_handler = RotatingFileHandler('tmp/microblog.log', 'a', 1 * 1024 * 1024, 10)
