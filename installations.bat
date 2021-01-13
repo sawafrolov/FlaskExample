@@ -1,3 +1,4 @@
+pip install sqlalchemy
 pip install flask
 pip install flask-sqlalchemy
 pip install flask-migrate
