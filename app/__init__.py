@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_bootstrap import Bootstrap
+from flask_babel import Babel
 from flask_moment import Moment
 from flask_mail import Mail
 import logging
@@ -14,6 +15,7 @@ login = LoginManager()
 login.init_app(app)
 login.login_view = "login"
 bootstrap = Bootstrap(app)
+babel = Babel(app)
 moment = Moment(app)
 mail = Mail(app)
 
