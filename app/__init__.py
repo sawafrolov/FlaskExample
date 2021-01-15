@@ -1,9 +1,8 @@
-from flask import Flask
+from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_bootstrap import Bootstrap
-from flask_babel import Babel
-from flask import request
+from flask_babel import Babel, lazy_gettext as _l
 from flask_moment import Moment
 from flask_mail import Mail
 import logging
@@ -13,8 +12,8 @@ app = Flask(__name__)
 app.config.from_object("config")
 db = SQLAlchemy(app)
 login = LoginManager()
-login.init_app(app)
 login.login_view = "login"
+login.login_message = _l("Please log in to access this page.")
 bootstrap = Bootstrap(app)
 babel = Babel(app)
 moment = Moment(app)
@@ -23,7 +22,7 @@ mail = Mail(app)
 
 @babel.localeselector
 def get_locale():
-    return request.accept_languages.best_match(app.config['LANGUAGES'])
+    return request.accept_languages.best_match(app.config["LANGUAGES"])
 
 
 if not app.debug:
