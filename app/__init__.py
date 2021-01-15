@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_bootstrap import Bootstrap
 from flask_babel import Babel
+from flask import request
 from flask_moment import Moment
 from flask_mail import Mail
 import logging
@@ -18,6 +19,12 @@ bootstrap = Bootstrap(app)
 babel = Babel(app)
 moment = Moment(app)
 mail = Mail(app)
+
+
+@babel.localeselector
+def get_locale():
+    return request.accept_languages.best_match(app.config['LANGUAGES'])
+
 
 if not app.debug:
     file_handler = RotatingFileHandler('tmp/microblog.log', 'a', 1 * 1024 * 1024, 10)
