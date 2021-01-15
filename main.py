@@ -1,4 +1,3 @@
-from app import routes
-from app import app
+from app import app, routes, db, cli
 
 app.run(debug=True)
