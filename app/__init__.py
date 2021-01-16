@@ -12,6 +12,7 @@ app = Flask(__name__)
 app.config.from_object("config")
 db = SQLAlchemy(app)
 login = LoginManager()
+login.init_app(app)
 login.login_view = "login"
 login.login_message = _l("Please log in to access this page.")
 bootstrap = Bootstrap(app)
@@ -22,7 +23,7 @@ mail = Mail(app)
 
 @babel.localeselector
 def get_locale():
-    return request.accept_languages.best_match(app.config["LANGUAGES"])
+    return "en"
 
 
 if not app.debug:
