@@ -10,7 +10,6 @@ pip install flask-moment
 pip install flask-whooshalchemy
 pip install flask-mail
 pip install sqlalchemy
-pip install requests
-pip install langdetect
+pip install googletrans
 pip install email_validator
 pip install pyjwt

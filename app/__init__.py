@@ -5,6 +5,7 @@ from flask_bootstrap import Bootstrap
 from flask_babel import Babel, lazy_gettext as _l
 from flask_moment import Moment
 from flask_mail import Mail
+from googletrans import Translator
 import logging
 from logging.handlers import RotatingFileHandler
 
@@ -17,6 +18,7 @@ login.login_view = "login"
 login.login_message = _l("Please log in to access this page.")
 bootstrap = Bootstrap(app)
 babel = Babel(app)
+translator = Translator()
 moment = Moment(app)
 mail = Mail(app)
 

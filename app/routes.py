@@ -1,9 +1,8 @@
-from flask import render_template, flash, redirect, url_for, request, g
+from flask import render_template, flash, redirect, url_for, request, jsonify, g
 from flask_login import login_user, logout_user, current_user, login_required
 from flask_babel import _, get_locale
-from langdetect import detect
 from datetime import datetime
-from app import app, db
+from app import app, db, translator
 from app.forms import EmptyForm, PostForm, LoginForm, RegistrationForm,\
     ResetPasswordRequestForm, ResetPasswordForm, EditProfileForm
 from app.models import User, Post
@@ -61,8 +60,8 @@ def logout():
 def index():
     form = PostForm()
     if form.validate_on_submit():
-        language = detect(form.post.data)
-        if language == 'UNKNOWN' or len(language) > 15:
+        language = translator.detect(form.post.data)
+        if language == 'UNKNOWN':
             language = ''
         post = Post(body=form.post.data, author=current_user, language=language)
         db.session.add(post)
@@ -78,6 +77,15 @@ def index():
     if posts.has_prev:
         prev_url = url_for("index", page=posts.prev_num)
     return render_template("index.html", title=_("Home"), form=form, posts=posts.items, next_url=next_url, prev_url=prev_url)
+
+
+@app.route("/translate", methods=["POST"])
+@login_required
+def translate_text():
+    result = translator.translate(request.form["text"], dest=g.locale)
+    return jsonify({
+        "text": result
+    })
 
 
 @app.route("/explore")
