@@ -19,8 +19,8 @@ def register():
         db.session.add(user)
         db.session.commit()
         flash(_("Congratulations, you are now a registered user!"))
-        return redirect(url_for("login"))
-    return render_template("register.html", title=_("Register"), form=form)
+        return redirect(url_for("auth.login"))
+    return render_template("auth/register.html", title=_("Register"), form=form)
 
 
 @bp.route("/login", methods=["GET", "POST"])
@@ -32,11 +32,11 @@ def login():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
             flash(_("Invalid username or password"))
-            return redirect(url_for("login"))
+            return redirect(url_for("auth.login"))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get("next")
         return redirect(next_page or url_for("index"))
-    return render_template("login.html", title=_("Sign In"), form=form)
+    return render_template("auth/login.html", title=_("Sign In"), form=form)
 
 
 @bp.route("/logout")
@@ -55,8 +55,8 @@ def reset_password_request():
         if user:
             send_password_reset_email(user)
         flash(_("Check your email for the instructions to reset your password"))
-        return redirect(url_for("login"))
-    return render_template("reset_password_request.html", title=_("Reset Password"), form=form)
+        return redirect(url_for("auth.login"))
+    return render_template("auth/reset_password_request.html", title=_("Reset Password"), form=form)
 
 
 @bp.route("/reset_password/<token>", methods=["GET", "POST"])
@@ -71,5 +71,5 @@ def reset_password(token):
         user.set_password(form.password.data)
         db.session.commit()
         flash(_("Your password has been reset."))
-        return redirect(url_for("login"))
-    return render_template("reset_password.html", form=form)
+        return redirect(url_for("auth.login"))
+    return render_template("auth/reset_password.html", form=form)
