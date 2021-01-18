@@ -23,7 +23,7 @@ mail = Mail(app)
 
 @babel.localeselector
 def get_locale():
-    return "en"
+    return "ru"
 
 
 if not app.debug:
