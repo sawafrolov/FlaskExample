@@ -60,7 +60,7 @@ def logout():
 def index():
     form = PostForm()
     if form.validate_on_submit():
-        language = translator.detect(form.post.data)
+        language = translator.detect(form.post.data).lang
         if language == 'UNKNOWN':
             language = ''
         post = Post(body=form.post.data, author=current_user, language=language)
@@ -87,7 +87,7 @@ def translate_text():
     dest_language = request.form['dest_language']
     result = translator.translate(text, src=source_language, dest=dest_language)
     return jsonify({
-        "text": result
+        "text": result.text
     })
 
 

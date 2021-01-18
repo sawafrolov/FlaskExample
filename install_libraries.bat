@@ -10,6 +10,6 @@ pip install flask-moment
 pip install flask-whooshalchemy
 pip install flask-mail
 pip install sqlalchemy
-pip install googletrans
+pip install googletrans==3.1.0a0
 pip install email_validator
 pip install pyjwt
