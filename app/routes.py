@@ -82,7 +82,10 @@ def index():
 @app.route("/translate", methods=["POST"])
 @login_required
 def translate_text():
-    result = translator.translate(request.form["text"], dest=g.locale)
+    text = request.form["text"]
+    source_language = request.form['source_language']
+    dest_language = request.form['dest_language']
+    result = translator.translate(text, src=source_language, dest=dest_language)
     return jsonify({
         "text": result
     })
