@@ -169,80 +169,80 @@ msgstr "Перевести"
 
 #: app/templates/base.html:4
 msgid "Welcome to Microblog"
-msgstr ""
+msgstr "Добро пожаловать в приложение Microblog"
 
 #: app/templates/base.html:26
 msgid "Login"
-msgstr ""
+msgstr "Вход"
 
 #: app/templates/base.html:28
 msgid "Profile"
-msgstr ""
+msgstr "Профиль"
 
 #: app/templates/base.html:29
 msgid "Logout"
-msgstr ""
+msgstr "Выход"
 
 #: app/templates/index.html:5
 #, python-format
 msgid "Hi, %(username)s!"
-msgstr ""
+msgstr "Привет, %(username)s!"
 
 #: app/templates/index.html:17 app/templates/user.html:41
 msgid "Newer posts"
-msgstr ""
+msgstr "Новее"
 
 #: app/templates/index.html:22 app/templates/user.html:46
 msgid "Older posts"
-msgstr ""
+msgstr "Старше"
 
 #: app/templates/login.html:12
 msgid "New User?"
-msgstr ""
+msgstr "Впервые здесь?"
 
 #: app/templates/login.html:12
 msgid "Click to Register!"
-msgstr ""
+msgstr "Регистрируйтесь!"
 
 #: app/templates/login.html:14
 msgid "Forgot Your Password?"
-msgstr ""
+msgstr "Забыли пароль?"
 
 #: app/templates/login.html:15
 msgid "Click to Reset It"
-msgstr ""
+msgstr "Нажмите для сброса пароля"
 
 #: app/templates/reset_password.html:5
 msgid "Reset Your Password"
-msgstr ""
+msgstr "Сбросить пароль"
 
 #: app/templates/user.html:8
 msgid "User"
-msgstr ""
+msgstr "Профиль пользователя"
 
 #: app/templates/user.html:11
 msgid "Last seen on"
-msgstr ""
+msgstr "Последний раз был"
 
 #: app/templates/user.html:13
 #, python-format
 msgid "%(count)d followers"
-msgstr ""
+msgstr "%(count)d подписчиков"
 
 #: app/templates/user.html:13
 #, python-format
 msgid "%(count)d following"
-msgstr ""
+msgstr "%(count)d подписок"
 
 #: app/templates/user.html:15
 msgid "Edit your profile"
-msgstr ""
+msgstr "Редактировать"
 
 #: app/templates/user.html:20
 msgid "Follow"
-msgstr ""
+msgstr "Подписаться"
 
 #: app/templates/user.html:27
 msgid "Unfollow"
-msgstr ""
+msgstr "Отписаться"
 
