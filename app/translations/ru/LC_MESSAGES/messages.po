@@ -21,51 +21,51 @@ msgstr ""
 
 #: app/__init__.py:17
 msgid "Please log in to access this page."
-msgstr ""
+msgstr "Войдите для доступа к этой странице."
 
 #: app/email.py:23
 msgid "[Microblog] Reset Your Password"
-msgstr ""
+msgstr "[Microblog] Сброс пароля"
 
 #: app/forms.py:11 app/forms.py:18 app/forms.py:51
 msgid "Username"
-msgstr ""
+msgstr "Имя"
 
 #: app/forms.py:12 app/forms.py:20 app/forms.py:43
 msgid "Password"
-msgstr ""
+msgstr "Пароль"
 
 #: app/forms.py:13
 msgid "Remember Me"
-msgstr ""
+msgstr "Запомнить"
 
 #: app/forms.py:14 app/routes.py:49 app/templates/login.html:5
 msgid "Sign In"
-msgstr ""
+msgstr "Вход"
 
 #: app/forms.py:19 app/forms.py:38
 msgid "Email"
-msgstr ""
+msgstr "Адрес электронной почты"
 
 #: app/forms.py:22 app/forms.py:45
 msgid "Repeat Password"
-msgstr ""
+msgstr "Повторите пароль"
 
 #: app/forms.py:24 app/routes.py:33 app/templates/register.html:5
 msgid "Register"
-msgstr ""
+msgstr "Регистрация"
 
 #: app/forms.py:29 app/forms.py:64
 msgid "Please use a different username."
-msgstr ""
+msgstr "Пожалуйста, используйте незанятое имя пользователя."
 
 #: app/forms.py:34
 msgid "Please use a different email address."
-msgstr ""
+msgstr "Пожалуйста, используйте незанятый адрес электронной почты."
 
 #: app/forms.py:39 app/forms.py:47
 msgid "Request Password Reset"
-msgstr ""
+msgstr "Запрос сброса пароля"
 
 #: app/forms.py:52
 msgid "About me"
@@ -81,11 +81,11 @@ msgstr "Скажите что-нибудь"
 
 #: app/routes.py:31
 msgid "Congratulations, you are now a registered user!"
-msgstr ""
+msgstr "Поздравляем, Вы зарегистрированы!"
 
 #: app/routes.py:44
 msgid "Invalid username or password"
-msgstr ""
+msgstr "Некорректное имя пользователя или пароль."
 
 #: app/routes.py:70
 msgid "Your post was published!"
@@ -93,79 +93,79 @@ msgstr "Ваш пост успешно опубликован!"
 
 #: app/routes.py:80 app/templates/base.html:21
 msgid "Home"
-msgstr ""
+msgstr "Главная"
 
 #: app/routes.py:94 app/templates/base.html:22
 msgid "Explore"
-msgstr ""
+msgstr "Обзор"
 
 #: app/routes.py:121
 msgid "Your changes have been saved."
-msgstr ""
+msgstr "Ваши изменения сохранены."
 
 #: app/routes.py:126 app/templates/edit_profile.html:5
 msgid "Edit Profile"
-msgstr ""
+msgstr "Редактировать"
 
 #: app/routes.py:136 app/routes.py:156
 #, python-format
 msgid "User %(username)s not found."
-msgstr ""
+msgstr "Пользователь %(username)s не найден."
 
 #: app/routes.py:139
 msgid "You cannot follow yourself!"
-msgstr ""
+msgstr "Нельзя подписаться на себя!"
 
 #: app/routes.py:143
 #, python-format
 msgid "You are following %(username)s!"
-msgstr ""
+msgstr "Вы подписались на %(username)s!"
 
 #: app/routes.py:159
 msgid "You cannot unfollow yourself!"
-msgstr ""
+msgstr "Нельзя отписаться от себя!"
 
 #: app/routes.py:163
 #, python-format
 msgid "You are not following %(username)s."
-msgstr ""
+msgstr "Вы отписались от %(username)s."
 
 #: app/routes.py:178
 msgid "Check your email for the instructions to reset your password"
-msgstr ""
+msgstr "Инструкции по сбросу пароля отправлены на Вашу почту"
 
 #: app/routes.py:180 app/templates/reset_password_request.html:5
 msgid "Reset Password"
-msgstr ""
+msgstr "Сброс пароля"
 
 #: app/routes.py:194
 msgid "Your password has been reset."
-msgstr ""
+msgstr "Ваш пароль успешно сброшен."
 
 #: app/templates/404.html:4
 msgid "Not Found"
-msgstr ""
+msgstr "Страница не найдена"
 
 #: app/templates/404.html:5 app/templates/500.html:6
 msgid "Back"
-msgstr ""
+msgstr "Назад"
 
 #: app/templates/500.html:4
 msgid "An unexpected error has occurred"
-msgstr ""
+msgstr "Произошла неизвестная ошибка"
 
 #: app/templates/500.html:5
 msgid "The administrator has been notified. Sorry for the inconvenience!"
-msgstr ""
+msgstr "Администратор приложения уже оповещен. Извините за беспокойство!"
 
 #: app/templates/_post.html:14
 #, python-format
 msgid "%(username)s said %(when)s"
-msgstr ""
+msgstr "%(username)s сказал %(when)s"
 
 #: app/templates/_post.html:26
 msgid "Translate"
-msgstr ""
+msgstr "Перевести"
 
 #: app/templates/base.html:4
 msgid "Welcome to Microblog"
