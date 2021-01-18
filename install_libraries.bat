@@ -11,6 +11,6 @@ pip install flask-whooshalchemy
 pip install flask-mail
 pip install sqlalchemy
 pip install requests
-pip install guess-language_spirit
+pip install langdetect
 pip install email_validator
 pip install pyjwt

@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request, g
 from flask_login import login_user, logout_user, current_user, login_required
 from flask_babel import _, get_locale
-from guess_language import guess_language
+from langdetect import detect
 from datetime import datetime
 from app import app, db
 from app.forms import EmptyForm, PostForm, LoginForm, RegistrationForm,\
@@ -61,7 +61,7 @@ def logout():
 def index():
     form = PostForm()
     if form.validate_on_submit():
-        language = guess_language(form.post.data)
+        language = detect(form.post.data)
         if language == 'UNKNOWN' or len(language) > 15:
             language = ''
         post = Post(body=form.post.data, author=current_user, language=language)
