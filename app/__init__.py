@@ -14,16 +14,19 @@ app.config.from_object("config")
 db = SQLAlchemy(app)
 login = LoginManager()
 login.init_app(app)
-login.login_view = "login"
+login.login_view = "auth.login"
 login.login_message = _l("Please log in to access this page.")
 bootstrap = Bootstrap(app)
 babel = Babel(app)
 translator = Translator()
 moment = Moment(app)
 mail = Mail(app)
+
 from app.errors import bp as errors_bp
 app.register_blueprint(errors_bp)
 
+from app.auth import bp as auth_bp
+app.register_blueprint(auth_bp, url_prefix="/auth")
 
 @babel.localeselector
 def get_locale():
