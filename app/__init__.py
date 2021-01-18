@@ -21,6 +21,8 @@ babel = Babel(app)
 translator = Translator()
 moment = Moment(app)
 mail = Mail(app)
+from app.errors import bp as errors_bp
+app.register_blueprint(errors_bp)
 
 
 @babel.localeselector
