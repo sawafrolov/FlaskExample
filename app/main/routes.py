@@ -13,6 +13,16 @@ def paginate_posts(posts):
     return posts.order_by(Post.timestamp.desc()).paginate(page, current_app.config["POSTS_PER_PAGE"], False)
 
 
+def get_next_and_prev(base_url, posts):
+    next_url = None
+    if posts.has_next:
+        next_url = url_for(base_url, page=posts.next_num)
+    prev_url = None
+    if posts.has_prev:
+        prev_url = url_for(base_url, page=posts.prev_num)
+    return (next_url, prev_url)
+
+
 @bp.before_app_first_request
 def before_request():
     if current_user.is_authenticated:
@@ -46,15 +56,10 @@ def index():
         db.session.add(post)
         db.session.commit()
         flash(_("Your post was published!"))
-        return redirect(url_for("index"))
+        return redirect(url_for("main.index"))
     posts = paginate_posts(current_user.followed_posts())
-    next_url = None
-    if posts.has_next:
-        next_url = url_for("index", page=posts.next_num)
-    prev_url = None
-    if posts.has_prev:
-        prev_url = url_for("index", page=posts.prev_num)
-    return render_template("index.html", title=_("Home"), form=form, posts=posts.items, next_url=next_url, prev_url=prev_url)
+    next_url, prev_url = get_next_and_prev("main.index", posts)
+    return render_template("main/index.html", title=_("Home"), form=form, posts=posts.items, next_url=next_url, prev_url=prev_url)
 
 
 @bp.route("/explore")
