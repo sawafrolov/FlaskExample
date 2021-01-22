@@ -8,19 +8,22 @@ from app.main.forms import EmptyForm, PostForm, EditProfileForm
 from app.models import User, Post
 
 
-def paginate_posts(posts):
+def paginate_posts(base_url, posts, username=""):
     page = request.args.get("page", 1, type=int)
-    return posts.order_by(Post.timestamp.desc()).paginate(page, current_app.config["POSTS_PER_PAGE"], False)
-
-
-def get_next_and_prev(base_url, posts):
+    paginated_posts = posts.order_by(Post.timestamp.desc()).paginate(page, current_app.config["POSTS_PER_PAGE"], False)
     next_url = None
-    if posts.has_next:
-        next_url = url_for(base_url, page=posts.next_num)
+    if paginated_posts.has_next:
+        if username == "":
+            next_url = url_for(base_url, page=posts.next_num)
+        else:
+            next_url = url_for(base_url, username=username, page=posts.next_num)
     prev_url = None
-    if posts.has_prev:
-        prev_url = url_for(base_url, page=posts.prev_num)
-    return (next_url, prev_url)
+    if paginated_posts.has_prev:
+        if username == "":
+            prev_url = url_for(base_url, page=posts.prev_num)
+        else:
+            prev_url = url_for(base_url, username=username, page=posts.prev_num)
+    return paginated_posts, next_url, prev_url
 
 
 @bp.before_app_first_request
@@ -50,44 +53,55 @@ def index():
     form = PostForm()
     if form.validate_on_submit():
         language = translator.detect(form.post.data).lang
-        if language == 'UNKNOWN':
-            language = ''
         post = Post(body=form.post.data, author=current_user, language=language)
         db.session.add(post)
         db.session.commit()
         flash(_("Your post was published!"))
         return redirect(url_for("main.index"))
-    posts = paginate_posts(current_user.followed_posts())
-    next_url, prev_url = get_next_and_prev("main.index", posts)
-    return render_template("main/index.html", title=_("Home"), form=form, posts=posts.items, next_url=next_url, prev_url=prev_url)
+    posts = current_user.followed_posts()
+    paginated_posts, next_url, prev_url = paginate_posts("main.index", posts)
+    return render_template(
+        "main/index.html",
+        title=_("Home"),
+        form=form,
+        posts=paginated_posts.items,
+        next_url=next_url,
+        prev_url=prev_url
+    )
 
 
 @bp.route("/explore")
 @login_required
 def explore():
-    posts = paginate_posts(Post.query.all())
-    next_url = None
-    if posts.has_next:
-        next_url = url_for("explore", page=posts.next_num)
-    prev_url = None
-    if posts.has_prev:
-        prev_url = url_for("explore", page=posts.prev_num)
-    return render_template("index.html", title=_("Explore"), posts=posts.items, next_url=next_url, prev_url=prev_url)
+    posts = Post.query.all()
+    paginated_posts, next_url, prev_url = paginate_posts("main.explore", posts)
+    return render_template(
+        "main/index.html",
+        title=_("Explore"),
+        posts=paginated_posts.items,
+        next_url=next_url,
+        prev_url=prev_url
+    )
 
 
 @bp.route("/user/<username>")
 @login_required
 def user(username):
-    user = User.query.filter_by(username=username).first_or_404()
-    posts = paginate_posts(user.posts)
-    next_url = None
-    if posts.has_next:
-        next_url = url_for("user", username=user.username, page=posts.next_num)
-    prev_url = None
-    if posts.has_prev:
-        prev_url = url_for("user", username=user.username, page=posts.prev_num)
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash(_("User %(username)s not found.", username=username))
+        return redirect(url_for("main.index"))
+    posts = user.posts
+    paginated_posts, next_url, prev_url = paginate_posts("main.user", posts, username=user.username)
     form = EmptyForm()
-    return render_template("user.html", user=user, posts=posts.items, next_url=next_url, prev_url=prev_url, form=form)
+    return render_template(
+        "main/user.html",
+        user=user,
+        posts=paginated_posts.items,
+        next_url=next_url,
+        prev_url=prev_url,
+        form=form
+    )
 
 
 @bp.route("/edit_profile", methods=["GET", "POST"])
@@ -99,11 +113,11 @@ def edit_profile():
         current_user.about_me = form.about_me.data
         db.session.commit()
         flash(_("Your changes have been saved."))
-        return redirect(url_for("edit_profile"))
+        return redirect(url_for("main.user", username=current_user.username))
     elif request.method == "GET":
         form.username.data = current_user.username
         form.about_me.data = current_user.about_me
-    return render_template("edit_profile.html", title=_("Edit Profile"), form=form)
+    return render_template("main/edit_profile.html", title=_("Edit Profile"), form=form)
 
 
 @bp.route("/follow/<username>", methods=["POST"])
@@ -114,16 +128,16 @@ def follow(username):
         user = User.query.filter_by(username=username).first()
         if user is None:
             flash(_("User %(username)s not found.", username=username))
-            return redirect(url_for("index"))
+            return redirect(url_for("main.index"))
         if user == current_user:
             flash(_("You cannot follow yourself!"))
-            return redirect(url_for("user", username=username))
+            return redirect(url_for("main.user", username=username))
         current_user.follow(user)
         db.session.commit()
         flash(_("You are following %(username)s!", username=username))
-        return redirect(url_for("user", username=username))
+        return redirect(url_for("main.user", username=username))
     else:
-        return redirect(url_for("index"))
+        return redirect(url_for("main.index"))
 
 
 @bp.route("/unfollow/<username>", methods=["POST"])
@@ -134,13 +148,13 @@ def unfollow(username):
         user = User.query.filter_by(username=username).first()
         if user is None:
             flash(_("User %(username)s not found.", username=username))
-            return redirect(url_for("index"))
+            return redirect(url_for("main.index"))
         if user == current_user:
             flash(_("You cannot unfollow yourself!"))
-            return redirect(url_for("user", username=username))
+            return redirect(url_for("main.user", username=username))
         current_user.unfollow(user)
         db.session.commit()
         flash(_("You are not following %(username)s.", username=username))
-        return redirect(url_for("user", username=username))
+        return redirect(url_for("main.user", username=username))
     else:
-        return redirect(url_for("index"))
+        return redirect(url_for("main.index"))
