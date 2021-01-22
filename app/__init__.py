@@ -6,6 +6,7 @@ from flask_babel import Babel, lazy_gettext as _l
 from flask_moment import Moment
 from flask_mail import Mail
 from googletrans import Translator
+from elasticsearch import Elasticsearch
 import logging
 from logging.handlers import RotatingFileHandler
 
@@ -22,6 +23,7 @@ mail = Mail()
 
 
 def create_app(config_file="config"):
+
     app = Flask(__name__)
     app.config.from_object(config_file)
     db.init_app(app)
@@ -30,6 +32,9 @@ def create_app(config_file="config"):
     babel.init_app(app)
     moment.init_app(app)
     mail.init_app(app)
+
+    if app.config["ENABLE_ELASTICSEARCH"]:
+        app.elasticsearch = Elasticsearch([app.config["ELASTICSEARCH_URL"]])
 
     from app.errors import bp as errors_bp
     app.register_blueprint(errors_bp)
