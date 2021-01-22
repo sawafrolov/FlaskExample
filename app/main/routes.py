@@ -4,7 +4,7 @@ from flask_babel import _, get_locale
 from datetime import datetime
 from app import db, translator
 from app.main import bp
-from app.main.forms import EmptyForm, PostForm, EditProfileForm
+from app.main.forms import EmptyForm, PostForm, EditProfileForm, SearchForm
 from app.models import User, Post
 
 
@@ -31,6 +31,7 @@ def before_request():
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
+        g.search_form = SearchForm()
     g.locale = str(get_locale())
 
 
