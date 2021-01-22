@@ -50,6 +50,8 @@ def create_app(config_file="config"):
         app.logger.addHandler(file_handler)
         app.logger.info("microblog startup")
 
+    return app
+
 
 @babel.localeselector
 def get_locale():

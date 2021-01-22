@@ -7,9 +7,9 @@ pip install flask-login
 pip install flask-bootstrap
 pip install flask-babel
 pip install flask-moment
-pip install flask-whooshalchemy
 pip install flask-mail
 pip install sqlalchemy
 pip install googletrans==3.1.0a0
+pip install elasticsearch
 pip install email_validator
 pip install pyjwt
