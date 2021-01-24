@@ -6,12 +6,14 @@ from flask_babel import Babel, lazy_gettext as _l
 from flask_moment import Moment
 from flask_mail import Mail
 from googletrans import Translator
-from elasticsearch import Elasticsearch
+from app.dao import DAO
+from app.enable_elasticsearch import enable_elasticsearch
 import logging
 from logging.handlers import RotatingFileHandler
 
 
 db = SQLAlchemy()
+dao = DAO()
 login = LoginManager()
 login.login_view = "auth.login"
 login.login_message = _l("Please log in to access this page.")
@@ -27,14 +29,13 @@ def create_app(config_file="config"):
     app = Flask(__name__)
     app.config.from_object(config_file)
     db.init_app(app)
+    dao.init_app(app)
     login.init_app(app)
     bootstrap.init_app(app)
     babel.init_app(app)
     moment.init_app(app)
     mail.init_app(app)
-
-    if app.config["ENABLE_ELASTICSEARCH"]:
-        app.elasticsearch = Elasticsearch([app.config["ELASTICSEARCH_URL"]])
+    app.elasticsearch = enable_elasticsearch(app.config["ELASTICSEARCH_URL"])
 
     from app.errors import bp as errors_bp
     app.register_blueprint(errors_bp)
