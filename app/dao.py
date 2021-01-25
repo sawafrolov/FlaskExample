@@ -12,6 +12,12 @@ class DAO:
     def commit_changes(self):
         self.db.session.commit()
 
+    def create_user(self, username, password, email):
+        user = User(username=username, email=email)
+        user.set_password(password)
+        self.db.session.add(user)
+        self.commit_changes()
+
     def update_last_seen(self, user):
         user.last_seen = datetime.utcnow()
         self.commit_changes()
