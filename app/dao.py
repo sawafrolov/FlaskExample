@@ -1,3 +1,4 @@
+from datetime import datetime
 from app.models import followers, User, Post
 
 
@@ -10,6 +11,10 @@ class DAO:
 
     def commit_changes(self):
         self.db.session.commit()
+
+    def update_last_seen(self, user):
+        user.last_seen = datetime.utcnow()
+        self.commit_changes()
 
     def is_following(self, user1, user2):
         return user1.followed.filter(
@@ -25,3 +30,8 @@ class DAO:
         if user1.is_following(user2):
             user1.followed.remove(user2)
             self.commit_changes()
+
+    def add_post(self, text, author, language):
+        post = Post(body=text, author=author, language=language)
+        self.db.session.add(post)
+        self.commit_changes()

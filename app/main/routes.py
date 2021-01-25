@@ -1,36 +1,34 @@
 from flask import current_app, render_template, flash, redirect, url_for, request, jsonify, g
 from flask_login import current_user, login_required
 from flask_babel import _, get_locale
-from datetime import datetime
-from app import db, translator
+from app import dao, translator
 from app.main import bp
 from app.main.forms import EmptyForm, PostForm, EditProfileForm, SearchForm
 from app.models import User, Post
 
 
-def paginate_posts(base_url, posts, username=""):
+def get_next_and_prev(base_url, posts, page, username=""):
     page = request.args.get("page", 1, type=int)
-    paginated_posts = posts.paginate(page, current_app.config["POSTS_PER_PAGE"], False)
+
     next_url = None
-    if paginated_posts.has_next:
+    if posts.has_next:
         if username == "":
-            next_url = url_for(base_url, page=paginated_posts.next_num)
+            next_url = url_for(base_url, page=page+1)
         else:
-            next_url = url_for(base_url, username=username, page=paginated_posts.next_num)
+            next_url = url_for(base_url, username=username, page=page+1)
     prev_url = None
-    if paginated_posts.has_prev:
+    if posts.has_prev:
         if username == "":
-            prev_url = url_for(base_url, page=paginated_posts.prev_num)
+            prev_url = url_for(base_url, page=page-1)
         else:
-            prev_url = url_for(base_url, username=username, page=paginated_posts.prev_num)
-    return paginated_posts, next_url, prev_url
+            prev_url = url_for(base_url, username=username, page=page-1)
+    return next_url, prev_url
 
 
 @bp.before_app_request
 def before_request():
     if current_user.is_authenticated:
-        current_user.last_seen = datetime.utcnow()
-        db.session.commit()
+        dao.update_last_seen(current_user)
         g.search_form = SearchForm()
     g.locale = str(get_locale())
 
@@ -54,13 +52,12 @@ def index():
     form = PostForm()
     if form.validate_on_submit():
         language = translator.detect(form.post.data).lang
-        post = Post(body=form.post.data, author=current_user, language=language)
-        db.session.add(post)
-        db.session.commit()
+        dao.add_post(form.post.data, current_user, language)
         flash(_("Your post was published!"))
         return redirect(url_for("main.index"))
+
     posts = current_user.followed_posts()
-    paginated_posts, next_url, prev_url = paginate_posts("main.index", posts)
+    next_url, prev_url = paginate_posts("main.index", posts)
     return render_template(
         "main/index.html",
         title=_("Home"),
@@ -74,7 +71,7 @@ def index():
 @bp.route("/explore")
 @login_required
 def explore():
-    posts = Post.query.order_by(Post.timestamp.desc())
+    posts =
     paginated_posts, next_url, prev_url = paginate_posts("main.explore", posts)
     return render_template(
         "main/index.html",
@@ -136,7 +133,7 @@ def edit_profile():
 def follow(username):
     form = EmptyForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=username).first()
+        user =
         if user is None:
             flash(_("User %(username)s not found.", username=username))
             return redirect(url_for("main.index"))
@@ -144,7 +141,7 @@ def follow(username):
             flash(_("You cannot follow yourself!"))
             return redirect(url_for("main.user", username=username))
         current_user.follow(user)
-        db.session.commit()
+
         flash(_("You are following %(username)s!", username=username))
         return redirect(url_for("main.user", username=username))
     else:

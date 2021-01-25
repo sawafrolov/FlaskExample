@@ -7,7 +7,6 @@ from flask_moment import Moment
 from flask_mail import Mail
 from googletrans import Translator
 from app.dao import DAO
-from app.select_dao import SelectDAO
 from app.enable_elasticsearch import enable_elasticsearch
 import logging
 from logging.handlers import RotatingFileHandler
@@ -45,7 +44,7 @@ def create_app(config_file="config"):
     app.register_blueprint(auth_bp, url_prefix="/auth")
 
     from app.main import bp as main_bp
-    app.register_blueprint(main_bp, url_prefix="/main")
+    app.register_blueprint(main_bp)
 
     if not app.debug:
         file_handler = RotatingFileHandler('tmp/microblog.log', 'a', 1 * 1024 * 1024, 10)
