@@ -16,6 +16,11 @@ class DAO:
         user.last_seen = datetime.utcnow()
         self.commit_changes()
 
+    def update_user_profile(self, user, username, about):
+        user.username = username
+        user.about_me = about
+        self.commit_changes()
+
     def is_following(self, user1, user2):
         return user1.followed.filter(
             followers.c.followed_id == user2.id
