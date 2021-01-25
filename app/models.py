@@ -3,14 +3,9 @@ from datetime import datetime
 from hashlib import md5
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from app import db, dao, login
+from app import db, dao
 from app.search import add_to_index, remove_from_index, query_index
-from app.select_dao import SelectDAO, PaginationResult
-
-
-@login.user_loader
-def load_user(id):
-    SelectDAO.select_user_by_id(id)
+from app.select_dao import PaginationResult
 
 
 class SearchableMixin(object):

@@ -7,6 +7,7 @@ from flask_moment import Moment
 from flask_mail import Mail
 from googletrans import Translator
 from app.dao import DAO
+from app.select_dao import SelectDAO
 from app.enable_elasticsearch import enable_elasticsearch
 import logging
 from logging.handlers import RotatingFileHandler
@@ -57,6 +58,11 @@ def create_app(config_file="config"):
         app.logger.info("microblog startup")
 
     return app
+
+
+@login.user_loader
+def load_user(id):
+    return SelectDAO.select_user_by_id(id)
 
 
 @babel.localeselector
