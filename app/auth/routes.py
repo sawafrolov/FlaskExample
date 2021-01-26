@@ -6,7 +6,7 @@ from app.auth import bp
 from app.auth.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm, ResetPasswordForm
 from app.models import User
 from app.select_dao import SelectDAO
-from app.auth.reset_password import send_password_reset_email
+from app.auth.reset_password import send_password_reset_email, verify_reset_password_token
 
 
 @bp.route("/register", methods=["GET", "POST"])
@@ -49,7 +49,7 @@ def reset_password_request():
         return redirect(url_for("main.index"))
     form = ResetPasswordRequestForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
+        user = SelectDAO.select_user_by_email(form.email.data)
         if user:
             send_password_reset_email(user)
         flash(_("Check your email for the instructions to reset your password"))
@@ -61,13 +61,12 @@ def reset_password_request():
 def reset_password(token):
     if current_user.is_authenticated:
         return redirect(url_for("main.index"))
-    user = User.verify_reset_password_token(token)
+    user = verify_reset_password_token(token)
     if not user:
         return redirect(url_for("main.index"))
     form = ResetPasswordForm()
     if form.validate_on_submit():
-        user.set_password(form.password.data)
-        db.session.commit()
+        dao.change_password(form.password.data)
         flash(_("Your password has been reset."))
         return redirect(url_for("auth.login"))
     return render_template("auth/reset_password.html", form=form)

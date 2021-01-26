@@ -27,6 +27,10 @@ class DAO:
         user.about_me = about
         self.commit_changes()
 
+    def change_password(self, user, password):
+        user.set_password(password)
+        self.commit_changes()
+
     def is_following(self, user1, user2):
         return user1.followed.filter(
             followers.c.followed_id == user2.id
