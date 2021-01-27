@@ -56,11 +56,6 @@ def create_app(config_file="config"):
     return app
 
 
-@login.user_loader
-def load_user(id):
-    return select_user_by_id(id)
-
-
 @babel.localeselector
 def get_locale():
     return "ru"
