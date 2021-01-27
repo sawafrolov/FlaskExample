@@ -57,5 +57,11 @@ def select_user_posts(user, page):
     return paginate_posts(posts, page)
 
 
-def select_posts_by_ids(ids):
-    return Post.query.filter(Post.id.in_(ids)).order_by(Post.timestamp.desc())
+def select_searched_posts(text, page):
+    ids, total = Post.search(text, page)
+    if total == 0:
+        return PaginationResult()
+    posts = Post.query.filter(Post.id.in_(ids)).order_by(Post.timestamp.desc())
+    has_next = total > page * current_app.config["POSTS_PER_PAGE"]
+    has_prev = page > 1
+    return PaginationResult(posts, has_next, has_prev)

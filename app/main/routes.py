@@ -1,11 +1,12 @@
 from flask import render_template, flash, redirect, url_for, request, jsonify, g
 from flask_login import current_user, login_required
 from flask_babel import _, get_locale
-from app import dao, translator
+from app import translator
 from app.main import bp
 from app.main.forms import EmptyForm, PostForm, EditProfileForm, SearchForm
-from app.models import Post
-from app.select_dao import SelectDAO
+from app.dao import add_post, update_last_seen, update_user_profile, follow, unfollow
+from app.select_dao import select_user_by_username, select_all_posts, select_user_followed_posts,\
+    select_user_posts, select_searched_posts
 
 
 def get_page():
@@ -31,7 +32,7 @@ def get_next_and_prev(base_url, posts, page, username=""):
 @bp.before_app_request
 def before_request():
     if current_user.is_authenticated:
-        dao.update_last_seen(current_user)
+        update_last_seen(current_user)
         g.search_form = SearchForm()
     g.locale = str(get_locale())
 
@@ -55,11 +56,11 @@ def index():
     form = PostForm()
     if form.validate_on_submit():
         language = translator.detect(form.post.data).lang
-        dao.add_post(form.post.data, current_user, language)
+        add_post(form.post.data, current_user, language)
         flash(_("Your post was published!"))
         return redirect(url_for("main.index"))
     page = get_page()
-    posts = SelectDAO.select_user_followed_posts(current_user, page)
+    posts = select_user_followed_posts(current_user, page)
     next_url, prev_url = get_next_and_prev("main.index", posts, page)
     return render_template(
         "main/index.html",
@@ -75,7 +76,7 @@ def index():
 @login_required
 def explore():
     page = get_page()
-    posts = SelectDAO.select_all_posts(page)
+    posts = select_all_posts(page)
     next_url, prev_url = get_next_and_prev("main.explore", posts, page)
     return render_template(
         "main/index.html",
@@ -92,7 +93,7 @@ def search():
     if not g.search_form.validate():
         return redirect(url_for("main.explore"))
     page = get_page()
-    posts = Post.search(g.search_form.q.data, page)
+    posts = select_searched_posts(g.search_form.q.data, page)
     next_url, prev_url = get_next_and_prev("main.index", posts, page)
     return render_template(
         "main/search.html",
@@ -106,12 +107,12 @@ def search():
 @bp.route("/user/<username>")
 @login_required
 def user(username):
-    user = SelectDAO.select_user_by_username(username)
+    user = select_user_by_username(username)
     if user is None:
         flash(_("User %(username)s not found.", username=username))
         return redirect(url_for("main.index"))
     page = get_page()
-    posts = SelectDAO.select_user_posts(user, page)
+    posts = select_user_posts(user, page)
     next_url, prev_url = get_next_and_prev("main.user", posts, page, username=user.username)
     form = EmptyForm()
     return render_template(
@@ -129,7 +130,7 @@ def user(username):
 def edit_profile():
     form = EditProfileForm(current_user.username)
     if form.validate_on_submit():
-        dao.update_user_profile(current_user, form.username.data, form.about_me.data)
+        update_user_profile(current_user, form.username.data, form.about_me.data)
         flash(_("Your changes have been saved."))
         return redirect(url_for("main.user", username=current_user.username))
     elif request.method == "GET":
@@ -143,14 +144,14 @@ def edit_profile():
 def follow(username):
     form = EmptyForm()
     if form.validate_on_submit():
-        user = SelectDAO.select_user_by_username(username)
+        user = select_user_by_username(username)
         if user is None:
             flash(_("User %(username)s not found.", username=username))
             return redirect(url_for("main.index"))
         if user == current_user:
             flash(_("You cannot follow yourself!"))
             return redirect(url_for("main.user", username=username))
-        dao.follow(current_user, user)
+        follow(current_user, user)
         flash(_("You are following %(username)s!", username=username))
         return redirect(url_for("main.user", username=username))
     else:
@@ -162,14 +163,14 @@ def follow(username):
 def unfollow(username):
     form = EmptyForm()
     if form.validate_on_submit():
-        user = SelectDAO.select_user_by_username(username)
+        user = select_user_by_username(username)
         if user is None:
             flash(_("User %(username)s not found.", username=username))
             return redirect(url_for("main.index"))
         if user == current_user:
             flash(_("You cannot unfollow yourself!"))
             return redirect(url_for("main.user", username=username))
-        dao.unfollow(current_user, user)
+        unfollow(current_user, user)
         flash(_("You are not following %(username)s.", username=username))
         return redirect(url_for("main.user", username=username))
     else:

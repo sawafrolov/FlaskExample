@@ -3,23 +3,15 @@ from datetime import datetime
 from hashlib import md5
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from app import db, dao
+from app import db
 from app.search import add_to_index, remove_from_index, query_index
-from app.select_dao import PaginationResult
 
 
 class SearchableMixin(object):
 
     @classmethod
     def search(cls, expression, page):
-        posts_per_page = current_app.config["POSTS_PER_PAGE"]
-        ids, total = query_index(cls.__tablename__, expression, page, posts_per_page)
-        if total == 0:
-            return PaginationResult()
-        posts = dao.select_posts_by_ids(ids)
-        has_next = total > page * posts_per_page
-        has_prev = page > 1
-        return PaginationResult(posts, has_next, has_prev)
+        return query_index(cls.__tablename__, expression, page, current_app.config["POSTS_PER_PAGE"])
 
     @classmethod
     def before_commit(cls, session):
