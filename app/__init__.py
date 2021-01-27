@@ -6,15 +6,12 @@ from flask_babel import Babel, lazy_gettext as _l
 from flask_moment import Moment
 from flask_mail import Mail
 from googletrans import Translator
-from app.dao import DAO
-from app.select_dao import SelectDAO
 from app.enable_elasticsearch import enable_elasticsearch
 import logging
 from logging.handlers import RotatingFileHandler
 
 
 db = SQLAlchemy()
-dao = DAO()
 login = LoginManager()
 login.login_view = "auth.login"
 login.login_message = _l("Please log in to access this page.")
@@ -30,7 +27,6 @@ def create_app(config_file="config"):
     app = Flask(__name__)
     app.config.from_object(config_file)
     db.init_app(app)
-    dao.init_app(app)
     login.init_app(app)
     bootstrap.init_app(app)
     babel.init_app(app)
@@ -62,7 +58,7 @@ def create_app(config_file="config"):
 
 @login.user_loader
 def load_user(id):
-    return SelectDAO.select_user_by_id(id)
+    return select_user_by_id(id)
 
 
 @babel.localeselector

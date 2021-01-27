@@ -1,52 +1,54 @@
 from datetime import datetime
+from app import db
 from app.models import followers, User, Post
 
 
-class DAO:
+def commit_changes():
+    db.session.commit()
 
-    db = None
 
-    def init_app(self, app):
-        self.db = app.db
+def create_user(username, password, email):
+    user = User(username=username, email=email)
+    user.set_password(password)
+    db.session.add(user)
+    commit_changes()
 
-    def commit_changes(self):
-        self.db.session.commit()
 
-    def create_user(self, username, password, email):
-        user = User(username=username, email=email)
-        user.set_password(password)
-        self.db.session.add(user)
-        self.commit_changes()
+def update_last_seen(user):
+    user.last_seen = datetime.utcnow()
+    commit_changes()
 
-    def update_last_seen(self, user):
-        user.last_seen = datetime.utcnow()
-        self.commit_changes()
 
-    def update_user_profile(self, user, username, about):
-        user.username = username
-        user.about_me = about
-        self.commit_changes()
+def update_user_profile(user, username, about):
+    user.username = username
+    user.about_me = about
+    commit_changes()
 
-    def change_password(self, user, password):
-        user.set_password(password)
-        self.commit_changes()
 
-    def is_following(self, user1, user2):
-        return user1.followed.filter(
-            followers.c.followed_id == user2.id
-        ).count() > 0
+def change_password(user, password):
+    user.set_password(password)
+    commit_changes()
 
-    def follow(self, user1, user2):
-        if not user1.is_following(user2):
-            user1.followed.append(user2)
-            self.commit_changes()
 
-    def unfollow(self, user1, user2):
-        if user1.is_following(user2):
-            user1.followed.remove(user2)
-            self.commit_changes()
+def is_following(user1, user2):
+    return user1.followed.filter(
+        followers.c.followed_id == user2.id
+    ).count() > 0
 
-    def add_post(self, text, author, language):
-        post = Post(body=text, author=author, language=language)
-        self.db.session.add(post)
-        self.commit_changes()
+
+def follow(user1, user2):
+    if not user1.is_following(user2):
+        user1.followed.append(user2)
+        commit_changes()
+
+
+def unfollow(user1, user2):
+    if user1.is_following(user2):
+        user1.followed.remove(user2)
+        commit_changes()
+
+
+def add_post(text, author, language):
+    post = Post(body=text, author=author, language=language)
+    db.session.add(post)
+    commit_changes()
