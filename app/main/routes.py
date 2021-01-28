@@ -4,9 +4,9 @@ from flask_babel import _, get_locale
 from app import translator
 from app.main import bp
 from app.main.forms import EmptyForm, PostForm, EditProfileForm, SearchForm
-from app.dao import add_post, update_last_seen, update_user_profile, follow, unfollow
-from app.select_dao import select_user_by_username, select_all_posts, select_user_followed_posts,\
-    select_user_posts, select_searched_posts
+from app.dao import add_post, update_last_seen, update_user_profile, is_following, follow, unfollow
+from app.select_dao import select_user_by_username, select_all_posts, select_user_followed_posts
+from app.select_dao import select_user_posts, select_searched_posts
 
 
 def get_page():
@@ -111,23 +111,37 @@ def user(username):
     if user is None:
         flash(_("User %(username)s not found.", username=username))
         return redirect(url_for("main.index"))
+    form_url = "main.edit_profile"
+    form_text = _("Edit")
+    if user != current_user:
+        if is_following(current_user, user):
+            form_url = "main.unfollow"
+            form_text = _("Unfollow")
+        else:
+            form_url = "main.follow"
+            form_text = _("Follow")
     page = get_page()
     posts = select_user_posts(user, page)
-    next_url, prev_url = get_next_and_prev("main.user", posts, page, username=user.username)
+    next_url, prev_url = get_next_and_prev("main.user", posts, page, user.username)
     form = EmptyForm()
     return render_template(
         "main/user.html",
         user=user,
+        form=form,
+        form_url=form_url,
+        form_text=form_text,
         posts=posts.items,
         next_url=next_url,
-        prev_url=prev_url,
-        form=form
+        prev_url=prev_url
     )
 
 
-@bp.route("/edit_profile", methods=["GET", "POST"])
+@bp.route("/edit_profile/<username>", methods=["GET", "POST"])
 @login_required
-def edit_profile():
+def edit_profile(username):
+    if username != current_user.username:
+        flash(_("System error: This is not your username."))
+        return redirect(url_for("main.index"))
     form = EditProfileForm(current_user.username)
     if form.validate_on_submit():
         update_user_profile(current_user, form.username.data, form.about_me.data)
