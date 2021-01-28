@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-01-28 20:05+0300\n"
+"POT-Creation-Date: 2021-01-28 20:48+0300\n"
 "PO-Revision-Date: 2021-01-16 02:55+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -181,8 +181,8 @@ msgid "Logout"
 msgstr "Выход"
 
 #: app/templates/base.html:79
-msgid "Error: Could not contact server."
-msgstr ""
+msgid "Could not contact server."
+msgstr "Нет ответа от сервера"
 
 #: app/templates/auth/login.html:12
 msgid "New User?"
@@ -284,4 +284,7 @@ msgstr "подписок"
 
 #~ msgid "Edit your profile"
 #~ msgstr "Редактировать"
+
+#~ msgid "Error: Could not contact server."
+#~ msgstr ""
 

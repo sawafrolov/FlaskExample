@@ -76,7 +76,7 @@
             ).done(function(response) {
                 $(destElem).text(response['text'])
             }).fail(function() {
-                $(destElem).text("{{ _('Error: Could not contact server.') }}");
+                $(destElem).text("{{ _('Could not contact server.') }}");
             });
         }
     </script>
