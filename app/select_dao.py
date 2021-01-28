@@ -53,7 +53,7 @@ def select_user_followed_posts(user, page):
 
 
 def select_user_posts(user, page):
-    posts = select_user_own_posts(user)
+    posts = select_user_own_posts(user).order_by(Post.timestamp.desc())
     return paginate_posts(posts, page)
 
 

@@ -4,7 +4,7 @@ from flask_babel import _, get_locale
 from app import translator
 from app.main import bp
 from app.main.forms import EmptyForm, PostForm, EditProfileForm, SearchForm
-from app.dao import add_post, update_last_seen, update_user_profile, is_following, follow, unfollow
+from app.dao import add_post, update_last_seen, update_user_profile, is_following, follow_to_user, unfollow_to_user
 from app.select_dao import select_user_by_username, select_all_posts, select_user_followed_posts
 from app.select_dao import select_user_posts, select_searched_posts
 
@@ -165,7 +165,7 @@ def follow(username):
         if user == current_user:
             flash(_("You cannot follow yourself!"))
             return redirect(url_for("main.user", username=username))
-        follow(current_user, user)
+        follow_to_user(current_user, user)
         flash(_("You are following %(username)s!", username=username))
         return redirect(url_for("main.user", username=username))
     else:
@@ -184,7 +184,7 @@ def unfollow(username):
         if user == current_user:
             flash(_("You cannot unfollow yourself!"))
             return redirect(url_for("main.user", username=username))
-        unfollow(current_user, user)
+        unfollow_to_user(current_user, user)
         flash(_("You are not following %(username)s.", username=username))
         return redirect(url_for("main.user", username=username))
     else:
