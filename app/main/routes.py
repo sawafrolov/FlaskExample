@@ -93,11 +93,12 @@ def search():
     if not g.search_form.validate():
         return redirect(url_for("main.explore"))
     page = get_page()
-    posts = select_searched_posts(g.search_form.q.data, page)
+    posts, total = select_searched_posts(g.search_form.q.data, page)
     next_url, prev_url = get_next_and_prev("main.index", posts, page)
     return render_template(
         "main/search.html",
         title=_("Search"),
+        total=total,
         posts=posts.items,
         next_url=next_url,
         prev_url=prev_url

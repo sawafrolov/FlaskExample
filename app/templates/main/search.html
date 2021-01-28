@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-<h1>{{ _('Search Results') }}</h1>
+{% if total == 0 %}
+<h1>{{ _('No results found') }}</h1>
+{% else %}
+<h1>{{ _('Search results') }}</h1>
 {% for post in posts %}
 {% include 'main/_post.html' %}
 {% endfor %}
@@ -19,4 +22,5 @@
         </li>
     </ul>
 </nav>
+{% endif %}
 {% endblock %}

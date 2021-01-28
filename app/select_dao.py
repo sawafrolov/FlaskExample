@@ -57,8 +57,8 @@ def select_user_posts(user, page):
 def select_searched_posts(text, page):
     ids, total = Post.search(text, page)
     if total == 0:
-        return PaginationResult([], False, False)
+        return PaginationResult([], False, False), 0
     posts = Post.query.filter(Post.id.in_(ids)).order_by(Post.timestamp.desc())
     has_next = total > page * current_app.config["POSTS_PER_PAGE"]
     has_prev = page > 1
-    return PaginationResult(posts, has_next, has_prev)
+    return PaginationResult(posts, has_next, has_prev), total

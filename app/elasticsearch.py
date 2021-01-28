@@ -2,7 +2,7 @@ from elasticsearch import Elasticsearch
 
 
 def check_elasticsearch(url):
-    return True
+    return False
 
 
 def enable_elasticsearch(url):
