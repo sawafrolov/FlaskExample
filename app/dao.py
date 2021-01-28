@@ -37,13 +37,13 @@ def is_following(user1, user2):
 
 
 def follow_to_user(user1, user2):
-    if not user1.is_following(user2):
+    if not is_following(user1, user2):
         user1.followed.append(user2)
         commit_changes()
 
 
 def unfollow_to_user(user1, user2):
-    if user1.is_following(user2):
+    if is_following(user1, user2):
         user1.followed.remove(user2)
         commit_changes()
 

@@ -8,9 +8,6 @@ class PaginationResult:
     has_next = False
     has_prev = False
 
-    def __init__(self):
-        pass
-
     def __init__(self, items, has_next, has_prev):
         self.items = items
         self.has_next = has_next
@@ -60,7 +57,7 @@ def select_user_posts(user, page):
 def select_searched_posts(text, page):
     ids, total = Post.search(text, page)
     if total == 0:
-        return PaginationResult()
+        return PaginationResult([], False, False)
     posts = Post.query.filter(Post.id.in_(ids)).order_by(Post.timestamp.desc())
     has_next = total > page * current_app.config["POSTS_PER_PAGE"]
     has_prev = page > 1
