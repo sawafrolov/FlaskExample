@@ -6,7 +6,7 @@ from flask_babel import Babel, lazy_gettext as _l
 from flask_moment import Moment
 from flask_mail import Mail
 from googletrans import Translator
-from app.enable_elasticsearch import enable_elasticsearch
+from app.elasticsearch import enable_elasticsearch
 import logging
 from logging.handlers import RotatingFileHandler
 
