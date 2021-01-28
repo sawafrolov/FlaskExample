@@ -94,7 +94,7 @@ def search():
         return redirect(url_for("main.explore"))
     page = get_page()
     posts, total = select_searched_posts(g.search_form.q.data, page)
-    next_url, prev_url = get_next_and_prev("main.index", posts, page)
+    next_url, prev_url = get_next_and_prev("main.search", posts, page)
     return render_template(
         "main/search.html",
         title=_("Search"),
