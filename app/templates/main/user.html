@@ -13,7 +13,7 @@
                 <p>{{ user.followers.count() }} {{ _('followers') }}</p>
                 <p>{{ user.followed.count() }} {{ _('following') }}</p>
                 <p>
-                    <form action="{{ url_for(form_url, username=user.username) }}" method="post">
+                    <form action="{{ url_for(form_url, username=user.username) }}" method="get">
                         {{ form.hidden_tag() }}
                         {{ form.submit(value=form_text, class_='btn btn-default') }}
                     </form>

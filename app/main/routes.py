@@ -29,6 +29,14 @@ def get_next_and_prev(base_url, posts, page, username=""):
     return next_url, prev_url
 
 
+def define_button(user):
+    if user != current_user:
+        if is_following(current_user, user):
+            return "main.unfollow", _("Unfollow")
+        return "main.follow", _("Follow")
+    return "main.edit_profile", _("Edit")
+
+
 @bp.before_app_request
 def before_request():
     if current_user.is_authenticated:
@@ -112,19 +120,11 @@ def user(username):
     if user is None:
         flash(_("User %(username)s not found.", username=username))
         return redirect(url_for("main.index"))
-    form_url = "main.edit_profile"
-    form_text = _("Edit")
-    if user != current_user:
-        if is_following(current_user, user):
-            form_url = "main.unfollow"
-            form_text = _("Unfollow")
-        else:
-            form_url = "main.follow"
-            form_text = _("Follow")
     page = get_page()
     posts = select_user_posts(user, page)
     next_url, prev_url = get_next_and_prev("main.user", posts, page, user.username)
     form = EmptyForm()
+    form_url, form_text = define_button(user)
     return render_template(
         "main/user.html",
         user=user,
@@ -134,6 +134,21 @@ def user(username):
         posts=posts.items,
         next_url=next_url,
         prev_url=prev_url
+    )
+
+
+@bp.route("/user/<username>/popup")
+@login_required
+def user_popup(username):
+    user = select_user_by_username(username)
+    form = EmptyForm()
+    form_url, form_text = define_button(user)
+    return render_template(
+        "main/user_popup.html",
+        user=user,
+        form=form,
+        form_url=form_url,
+        form_text=form_text
     )
 
 
@@ -153,39 +168,31 @@ def edit_profile(username):
     return render_template("main/edit_profile.html", title=_("Edit Profile"), form=form)
 
 
-@bp.route("/follow/<username>", methods=["POST"])
+@bp.route("/follow/<username>", methods=["GET"])
 @login_required
 def follow(username):
-    form = EmptyForm()
-    if form.validate_on_submit():
-        user = select_user_by_username(username)
-        if user is None:
-            flash(_("User %(username)s not found.", username=username))
-            return redirect(url_for("main.index"))
-        if user == current_user:
-            flash(_("You cannot follow yourself!"))
-            return redirect(url_for("main.user", username=username))
-        follow_to_user(current_user, user)
-        flash(_("You are following %(username)s!", username=username))
-        return redirect(url_for("main.user", username=username))
-    else:
+    user = select_user_by_username(username)
+    if user is None:
+        flash(_("User %(username)s not found.", username=username))
         return redirect(url_for("main.index"))
+    if user == current_user:
+        flash(_("You cannot follow yourself!"))
+        return redirect(url_for("main.user", username=username))
+    follow_to_user(current_user, user)
+    flash(_("You are following %(username)s!", username=username))
+    return redirect(url_for("main.user", username=username))
 
 
-@bp.route("/unfollow/<username>", methods=["POST"])
+@bp.route("/unfollow/<username>", methods=["GET"])
 @login_required
 def unfollow(username):
-    form = EmptyForm()
-    if form.validate_on_submit():
-        user = select_user_by_username(username)
-        if user is None:
-            flash(_("User %(username)s not found.", username=username))
-            return redirect(url_for("main.index"))
-        if user == current_user:
-            flash(_("You cannot unfollow yourself!"))
-            return redirect(url_for("main.user", username=username))
-        unfollow_to_user(current_user, user)
-        flash(_("You are not following %(username)s.", username=username))
-        return redirect(url_for("main.user", username=username))
-    else:
+    user = select_user_by_username(username)
+    if user is None:
+        flash(_("User %(username)s not found.", username=username))
         return redirect(url_for("main.index"))
+    if user == current_user:
+        flash(_("You cannot unfollow yourself!"))
+        return redirect(url_for("main.user", username=username))
+    unfollow_to_user(current_user, user)
+    flash(_("You are not following %(username)s.", username=username))
+    return redirect(url_for("main.user", username=username))
