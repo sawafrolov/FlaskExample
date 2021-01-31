@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-01-28 21:01+0300\n"
+"POT-Creation-Date: 2021-01-31 08:20+0300\n"
 "PO-Revision-Date: 2021-01-16 02:55+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -100,66 +100,66 @@ msgstr "Отправить"
 msgid "Say something"
 msgstr "Скажите что-нибудь"
 
-#: app/main/forms.py:39 app/main/routes.py:100
+#: app/main/forms.py:39 app/main/routes.py:108
 #, fuzzy
 msgid "Search"
 msgstr "Поиск"
 
-#: app/main/routes.py:60
+#: app/main/routes.py:35
+msgid "Unfollow"
+msgstr "Отписаться"
+
+#: app/main/routes.py:36
+msgid "Follow"
+msgstr "Подписаться"
+
+#: app/main/routes.py:37
+msgid "Edit"
+msgstr "Редактировать"
+
+#: app/main/routes.py:68
 msgid "Your post was published!"
 msgstr "Ваш пост успешно опубликован!"
 
-#: app/main/routes.py:67 app/templates/base.html:21
+#: app/main/routes.py:75 app/templates/base.html:21
 msgid "Home"
 msgstr "Главная"
 
-#: app/main/routes.py:83 app/templates/base.html:22
+#: app/main/routes.py:91 app/templates/base.html:22
 msgid "Explore"
 msgstr "Обзор"
 
-#: app/main/routes.py:113 app/main/routes.py:164 app/main/routes.py:183
+#: app/main/routes.py:121 app/main/routes.py:176 app/main/routes.py:191
 #, python-format
 msgid "User %(username)s not found."
 msgstr "Пользователь %(username)s не найден."
 
-#: app/main/routes.py:116
-msgid "Edit"
-msgstr "Редактировать"
-
-#: app/main/routes.py:120
-msgid "Unfollow"
-msgstr "Отписаться"
-
-#: app/main/routes.py:123
-msgid "Follow"
-msgstr "Подписаться"
-
-#: app/main/routes.py:144
+#: app/main/routes.py:159
 msgid "System error: This is not your username."
 msgstr "Ошибка системы: Передано некорректное имя пользователя"
 
-#: app/main/routes.py:149
+#: app/main/routes.py:164
 msgid "Your changes have been saved."
 msgstr "Ваши изменения сохранены."
 
-#: app/main/routes.py:154 app/templates/main/edit_profile.html:5
+#: app/main/routes.py:168 app/templates/main/edit_profile.html:5
 msgid "Edit Profile"
 msgstr "Редактирование профиля"
 
-#: app/main/routes.py:167
+#: app/main/routes.py:179
 msgid "You cannot follow yourself!"
 msgstr "Нельзя подписаться на себя!"
 
-#: app/main/routes.py:170
+#: app/main/routes.py:182
 #, python-format
 msgid "You are following %(username)s!"
 msgstr "Вы подписались на %(username)s!"
 
-#: app/main/routes.py:186
+#: app/main/routes.py:194
 msgid "You cannot unfollow yourself!"
 msgstr "Нельзя отписаться от себя!"
 
-#: app/main/routes.py:189
+#: app/main/routes.py:197
 #, python-format
 msgid "You are not following %(username)s."
 msgstr "Вы отписались от %(username)s."
@@ -220,12 +220,12 @@ msgstr "Произошла неизвестная ошибка"
 msgid "The administrator has been notified. Sorry for the inconvenience!"
 msgstr "Администратор приложения уже оповещен. Извините за беспокойство!"
 
-#: app/templates/main/_post.html:14
+#: app/templates/main/_post.html:16
 #, python-format
 msgid "%(username)s said %(when)s"
 msgstr "%(username)s сказал %(when)s"
 
-#: app/templates/main/_post.html:26
+#: app/templates/main/_post.html:28
 msgid "Translate"
 msgstr "Перевести"
 
@@ -267,11 +267,12 @@ msgid "Last seen on"
 msgstr "Последний раз был"
 
 #: app/templates/main/user.html:13
-#, fuzzy
-msgid "followers"
-msgstr "подписчиков"
+#, fuzzy, python-format
+msgid "%(count)d followers"
+msgstr "%(count)d подписчиков"
 
 #: app/templates/main/user.html:14
-#, fuzzy
-msgid "following"
-msgstr "подписок"
+#, fuzzy, python-format
+msgid "%(count)d following"
+msgstr "%(count)d подписок"
+

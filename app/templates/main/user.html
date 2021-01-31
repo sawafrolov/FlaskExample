@@ -10,8 +10,8 @@
                 {% if user.last_seen %}
                 <p>{{ _('Last seen on') }}: {{ moment(user.last_seen).format('LLL') }}</p>
                 {% endif %}
-                <p>{{ user.followers.count() }} {{ _('followers') }}</p>
-                <p>{{ user.followed.count() }} {{ _('following') }}</p>
+                <p>{{ _('%(count)d followers', count=user.followers.count()) }}</p>
+                <p>{{ _('%(count)d following', count=user.followed.count()) }}</p>
                 <p>
                     <form action="{{ url_for(form_url, username=user.username) }}" method="get">
                         {{ form.hidden_tag() }}

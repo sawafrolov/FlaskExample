@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-01-28 21:01+0300\n"
+"POT-Creation-Date: 2021-01-31 08:20+0300\n"
 "PO-Revision-Date: 2021-01-16 02:56+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -99,65 +99,65 @@ msgstr ""
 msgid "Say something"
 msgstr ""
 
-#: app/main/forms.py:39 app/main/routes.py:100
+#: app/main/forms.py:39 app/main/routes.py:108
 msgid "Search"
 msgstr ""
 
-#: app/main/routes.py:60
+#: app/main/routes.py:35
+msgid "Unfollow"
+msgstr ""
+
+#: app/main/routes.py:36
+msgid "Follow"
+msgstr ""
+
+#: app/main/routes.py:37
+msgid "Edit"
+msgstr ""
+
+#: app/main/routes.py:68
 msgid "Your post was published!"
 msgstr ""
 
-#: app/main/routes.py:67 app/templates/base.html:21
+#: app/main/routes.py:75 app/templates/base.html:21
 msgid "Home"
 msgstr ""
 
-#: app/main/routes.py:83 app/templates/base.html:22
+#: app/main/routes.py:91 app/templates/base.html:22
 msgid "Explore"
 msgstr ""
 
-#: app/main/routes.py:113 app/main/routes.py:164 app/main/routes.py:183
+#: app/main/routes.py:121 app/main/routes.py:176 app/main/routes.py:191
 #, python-format
 msgid "User %(username)s not found."
 msgstr ""
 
-#: app/main/routes.py:116
-msgid "Edit"
-msgstr ""
-
-#: app/main/routes.py:120
-msgid "Unfollow"
-msgstr ""
-
-#: app/main/routes.py:123
-msgid "Follow"
-msgstr ""
-
-#: app/main/routes.py:144
+#: app/main/routes.py:159
 msgid "System error: This is not your username."
 msgstr ""
 
-#: app/main/routes.py:149
+#: app/main/routes.py:164
 msgid "Your changes have been saved."
 msgstr ""
 
-#: app/main/routes.py:154 app/templates/main/edit_profile.html:5
+#: app/main/routes.py:168 app/templates/main/edit_profile.html:5
 msgid "Edit Profile"
 msgstr ""
 
-#: app/main/routes.py:167
+#: app/main/routes.py:179
 msgid "You cannot follow yourself!"
 msgstr ""
 
-#: app/main/routes.py:170
+#: app/main/routes.py:182
 #, python-format
 msgid "You are following %(username)s!"
 msgstr ""
 
-#: app/main/routes.py:186
+#: app/main/routes.py:194
 msgid "You cannot unfollow yourself!"
 msgstr ""
 
-#: app/main/routes.py:189
+#: app/main/routes.py:197
 #, python-format
 msgid "You are not following %(username)s."
 msgstr ""
@@ -218,12 +218,12 @@ msgstr ""
 msgid "The administrator has been notified. Sorry for the inconvenience!"
 msgstr ""
 
-#: app/templates/main/_post.html:14
+#: app/templates/main/_post.html:16
 #, python-format
 msgid "%(username)s said %(when)s"
 msgstr ""
 
-#: app/templates/main/_post.html:26
+#: app/templates/main/_post.html:28
 msgid "Translate"
 msgstr ""
 
@@ -265,11 +265,13 @@ msgid "Last seen on"
 msgstr ""
 
 #: app/templates/main/user.html:13
-msgid "followers"
+#, python-format
+msgid "%(count)d followers"
 msgstr ""
 
 #: app/templates/main/user.html:14
-msgid "following"
+#, python-format
+msgid "%(count)d following"
 msgstr ""
 
 #~ msgid "%(count)d followers"
@@ -282,5 +284,11 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Error: Could not contact server."
+#~ msgstr ""
+
+#~ msgid "followers"
+#~ msgstr ""
+
+#~ msgid "following"
 #~ msgstr ""
 
