@@ -7,8 +7,6 @@ from flask_moment import Moment
 from flask_mail import Mail
 from googletrans import Translator
 from app.elasticsearch import enable_elasticsearch
-import logging
-from logging.handlers import RotatingFileHandler
 
 
 db = SQLAlchemy()
@@ -42,16 +40,6 @@ def create_app(config_file="config"):
 
     from app.main import bp as main_bp
     app.register_blueprint(main_bp)
-
-    if not app.debug:
-        file_handler = RotatingFileHandler('tmp/microblog.log', 'a', 1 * 1024 * 1024, 10)
-        file_handler.setFormatter(logging.Formatter(
-            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
-        ))
-        app.logger.setLevel(logging.INFO)
-        file_handler.setLevel(logging.INFO)
-        app.logger.addHandler(file_handler)
-        app.logger.info("microblog startup")
 
     return app
 
