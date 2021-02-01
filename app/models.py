@@ -56,6 +56,7 @@ class User(UserMixin, db.Model):
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+    not_read = db.Column(db.Integer, default=0)
 
     followed = db.relationship(
         'User', secondary=followers,
@@ -113,10 +114,19 @@ class Message(db.Model):
     recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     body = db.Column(db.String(140))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    is_read = db.Column(db.Boolean, index=True, default=False)
 
     def __repr__(self):
         return '<Message {}>'.format(self.body)
+
+
+class Dialog(db.Model):
+
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    not_read = db.Column(db.Integer, default=0)
+
+    def __repr__(self):
+        return '<Dialog {}>'.format(self.body)
 
 
 db.event.listen(db.session, 'before_commit', SearchableMixin.before_commit)

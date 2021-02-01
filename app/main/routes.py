@@ -3,7 +3,7 @@ from flask_login import current_user, login_required
 from flask_babel import _, get_locale
 from app import translator
 from app.main import bp
-from app.main.forms import EmptyForm, PostForm, EditProfileForm, SearchForm
+from app.main.forms import EditProfileForm, EmptyForm, MessageForm, SearchForm
 from app.dao import add_post, update_last_seen, update_user_profile, is_following, follow_to_user, unfollow_to_user
 from app.select_dao import select_user_by_username, select_all_posts, select_user_followed_posts
 from app.select_dao import select_user_posts, select_searched_posts
@@ -61,10 +61,10 @@ def translate_text():
 @bp.route("/index", methods=["GET", "POST"])
 @login_required
 def index():
-    form = PostForm()
+    form = MessageForm()
     if form.validate_on_submit():
-        language = translator.detect(form.post.data).lang
-        add_post(form.post.data, current_user, language)
+        language = translator.detect(form.message.data).lang
+        add_post(form.message.data, current_user, language)
         flash(_("Your post was published!"))
         return redirect(url_for("main.index"))
     page = get_page()
