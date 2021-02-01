@@ -128,6 +128,7 @@ class Message(db.Model):
 
 class Dialog(db.Model):
 
+    id = db.Column(db.Integer, primary_key=True)
     sender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     not_read = db.Column(db.Integer, default=0)
