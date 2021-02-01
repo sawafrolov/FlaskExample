@@ -1,7 +1,7 @@
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 from app import db, create_app
-from app.models import followers, User, Post, Message
+from app.models import followers, User, Post, Dialog
 
 app = create_app()
 migrate = Migrate(app, db)

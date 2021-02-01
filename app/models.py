@@ -80,6 +80,13 @@ class User(UserMixin, db.Model):
         lazy='dynamic'
     )
 
+    dialogs = db.relationship(
+        'Dialog',
+        foreign_keys='Dialog.recipient_id',
+        backref='recipient',
+        lazy='dynamic'
+    )
+
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
