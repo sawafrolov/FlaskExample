@@ -5,8 +5,8 @@ from app import translator
 from app.main import bp
 from app.main.forms import EditProfileForm, EmptyForm, MessageForm, SearchForm
 from app.dao import add_post, update_last_seen, update_user_profile, is_following, follow_to_user, unfollow_to_user
-from app.select_dao import select_user_by_username, select_all_posts, select_user_followed_posts
-from app.select_dao import select_user_posts, select_searched_posts
+from app.select_dao import select_user_by_username, select_all_posts, select_current_user_followed_posts
+from app.select_dao import select_current_user_posts, select_searched_posts
 
 
 def get_page():
@@ -68,7 +68,7 @@ def index():
         flash(_("Your post was published!"))
         return redirect(url_for("main.index"))
     page = get_page()
-    posts = select_user_followed_posts(current_user, page)
+    posts = select_current_user_followed_posts(current_user, page)
     next_url, prev_url = get_next_and_prev("main.index", posts, page)
     return render_template(
         "main/index.html",
@@ -78,6 +78,12 @@ def index():
         next_url=next_url,
         prev_url=prev_url
     )
+
+
+@bp.route("/messages")
+@login_required
+def messages():
+
 
 
 @bp.route("/explore")
@@ -121,7 +127,7 @@ def user(username):
         flash(_("User %(username)s not found.", username=username))
         return redirect(url_for("main.index"))
     page = get_page()
-    posts = select_user_posts(user, page)
+    posts = select_current_user_posts(user, page)
     next_url, prev_url = get_next_and_prev("main.user", posts, page, user.username)
     form = EmptyForm()
     form_url, form_text = define_button(user)

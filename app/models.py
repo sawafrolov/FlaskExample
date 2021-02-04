@@ -87,6 +87,13 @@ class User(UserMixin, db.Model):
         lazy='dynamic'
     )
 
+    dialogs_send = db.relationship(
+        'Dialog',
+        foreign_keys='Dialog.sender_id',
+        backref='sender',
+        lazy='dynamic'
+    )
+
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
@@ -132,9 +139,10 @@ class Dialog(db.Model):
     sender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     not_read = db.Column(db.Integer, default=0)
+    last_message = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
     def __repr__(self):
-        return '<Dialog {}>'.format(self.body)
+        return '<Dialog {} with {}>'.format(self.sender_id, self.recipient_id)
 
 
 db.event.listen(db.session, 'before_commit', SearchableMixin.before_commit)
