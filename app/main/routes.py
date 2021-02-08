@@ -5,8 +5,9 @@ from app import translator
 from app.main import bp
 from app.main.forms import EditProfileForm, EmptyForm, MessageForm, SearchForm
 from app.dao import add_post, update_last_seen, update_user_profile, is_following, follow_to_user, unfollow_to_user
-from app.select_dao import select_user_by_username, select_all_posts, select_current_user_followed_posts
-from app.select_dao import select_current_user_posts, select_searched_posts
+from app.dao import send_message, read_messages
+from app.select_dao import select_user_by_username, select_all_users, select_current_user_followed_posts
+from app.select_dao import select_user_posts, select_searched_posts, select_dialogs, select_messages
 
 
 def get_page():
@@ -80,22 +81,54 @@ def index():
     )
 
 
-@bp.route("/messages")
+@bp.route("/dialogs")
 @login_required
-def messages():
+def dialogs():
+    page = get_page()
+    dialogs = select_dialogs(page)
+    next_url, prev_url = get_next_and_prev("main.dialogs", dialogs, page)
+    return render_template(
+        "main/dialogs.html",
+        title=_("Messages"),
+        dialogs=dialogs.items,
+        next_url=next_url,
+        prev_url=prev_url
+    )
 
+
+@bp.route("/messages/<username>", methods=["GET", "POST"])
+@login_required
+def messages(username):
+    form = MessageForm()
+    if form.validate_on_submit():
+        language = translator.detect(form.message.data).lang
+        send_message(form.message.data, current_user, username, language)
+        flash(_("Your message was sent!"))
+        return redirect(url_for("main.messages", username=username))
+    page = get_page()
+    messages = select_messages(username, page)
+    read_messages(username)
+    next_url, prev_url = get_next_and_prev("main.messages", messages, page, username)
+    return render_template(
+        "main/messages.html",
+        title=_("Messages"),
+        form=form,
+        posts=messages.items,
+        next_url=next_url,
+        prev_url=prev_url
+    )
 
 
 @bp.route("/explore")
 @login_required
 def explore():
     page = get_page()
-    posts = select_all_posts(page)
-    next_url, prev_url = get_next_and_prev("main.explore", posts, page)
+    users = select_all_users(page)
+    next_url, prev_url = get_next_and_prev("main.explore", users, page)
     return render_template(
-        "main/index.html",
+        "main/explore.html",
         title=_("Explore"),
-        posts=posts.items,
+        users=users.items,
         next_url=next_url,
         prev_url=prev_url
     )
@@ -105,7 +138,7 @@ def explore():
 @login_required
 def search():
     if not g.search_form.validate():
-        return redirect(url_for("main.explore"))
+        return redirect(url_for("main.index"))
     page = get_page()
     posts, total = select_searched_posts(g.search_form.q.data, page)
     next_url, prev_url = get_next_and_prev("main.search", posts, page)
@@ -127,7 +160,7 @@ def user(username):
         flash(_("User %(username)s not found.", username=username))
         return redirect(url_for("main.index"))
     page = get_page()
-    posts = select_current_user_posts(user, page)
+    posts = select_user_posts(user, page)
     next_url, prev_url = get_next_and_prev("main.user", posts, page, user.username)
     form = EmptyForm()
     form_url, form_text = define_button(user)

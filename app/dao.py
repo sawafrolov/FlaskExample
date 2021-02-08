@@ -52,3 +52,6 @@ def add_post(text, author, language):
     post = Post(body=text, author=author, language=language)
     db.session.add(post)
     commit_changes()
+
+
+def read_messages(username):
