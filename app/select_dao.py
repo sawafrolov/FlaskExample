@@ -48,8 +48,8 @@ def select_current_user_followed_posts(page):
     return paginate_result(posts, page)
 
 
-def select_user_posts(username, page):
-    posts = select_user_by_username(username).posts.order_by(Post.timestamp.desc())
+def select_user_posts(user, page):
+    posts = user.posts.order_by(Post.timestamp.desc())
     return paginate_result(posts, page)
 
 

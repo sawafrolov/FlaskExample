@@ -69,7 +69,7 @@ def index():
         flash(_("Your post was published!"))
         return redirect(url_for("main.index"))
     page = get_page()
-    posts = select_current_user_followed_posts(current_user, page)
+    posts = select_current_user_followed_posts(page)
     next_url, prev_url = get_next_and_prev("main.index", posts, page)
     return render_template(
         "main/index.html",
