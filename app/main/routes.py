@@ -102,7 +102,7 @@ def messages(username):
     form = MessageForm()
     if form.validate_on_submit():
         language = translator.detect(form.message.data).lang
-        send_message(form.message.data, current_user, username, language)
+        send_message(form.message.data, username, language)
         flash(_("Your message was sent!"))
         return redirect(url_for("main.messages", username=username))
     page = get_page()
