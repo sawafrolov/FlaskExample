@@ -10,21 +10,25 @@
                 {% if user.last_seen %}
                 <p>{{ _('Last seen on') }}: {{ moment(user.last_seen).format('LLL') }}</p>
                 {% endif %}
-                <p>{{ _('%(count)d followers', count=user.followers.count()) }}</p>
-                <p>{{ _('%(count)d following', count=user.followed.count()) }}</p>
+                <p>{{ user.followers.count() }} {{ _('followers') }}</p>
+                <p>{{ user.followed.count() }} {{ _('following') }}</p>
                 <p>
-                    <form action="{{ url_for(form_url, username=user.username) }}" method="get">
-                        {{ form.hidden_tag() }}
-                        {{ form.submit(value=form_text, class_='btn btn-default') }}
-                    </form>
+                    <a class="btn btn-primary"
+                       href="{{ url_for(url, username=user.username) }}"
+                       role="button"
+                    >
+                        {{ text }}
+                    </a>
                 </p>
-                {% if write_form %}
-                <p>
-                    <form action='{{ url_for("chat.write_message", username=user.username) }}' method="get">
-                        {{ write_form.hidden_tag() }}
-                        {{ write_form.submit(value=_("Send message"), class_='btn btn-default') }}
-                    </form>
-                </p>
+                {% if user != current_user %}
+                    <p>
+                        <a class="btn btn-primary"
+                           href="{{ url_for('chat.write_message', username=user.username) }}"
+                           role="button"
+                        >
+                            {{ _("Send message") }}
+                        </a>
+                    </p>
                 {% endif %}
             </td>
         </tr>

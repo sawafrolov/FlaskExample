@@ -32,9 +32,9 @@ def get_next_and_prev(base_url, posts, page, username=""):
 def define_button(user):
     if user != current_user:
         if is_following(current_user, user):
-            return "main.unfollow", _("Unfollow"), EmptyForm()
-        return "main.follow", _("Follow"), EmptyForm()
-    return "main.edit_profile", _("Edit"), None
+            return "main.unfollow", _("Unfollow")
+        return "main.follow", _("Follow")
+    return "main.edit_profile", _("Edit")
 
 
 @bp.before_app_request
@@ -123,16 +123,13 @@ def user(username):
     page = get_page()
     posts = select_user_posts(user, page)
     next_url, prev_url = get_next_and_prev("main.user", posts, page, user.username)
-    form = EmptyForm()
-    form_url, form_text, write_form = define_button(user)
+    url, text = define_button(user)
     return render_template(
         "main/user.html",
         user=user,
-        form=form,
-        form_url=form_url,
-        form_text=form_text,
+        url=url,
+        text=text,
         posts=posts.items,
-        write_form=write_form,
         next_url=next_url,
         prev_url=prev_url
     )
