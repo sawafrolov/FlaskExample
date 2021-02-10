@@ -3,11 +3,10 @@ from flask_login import current_user, login_required
 from flask_babel import _, get_locale
 from app import translator
 from app.main import bp
-from app.main.forms import EditProfileForm, EmptyForm, MessageForm, SearchForm
+from app.main.forms import EditProfileForm, EmptyForm, PostForm, SearchForm
 from app.dao import add_post, update_last_seen, update_user_profile, is_following, follow_to_user, unfollow_to_user
-from app.dao import send_message, read_messages
 from app.select_dao import select_user_by_username, select_all_users, select_current_user_followed_posts
-from app.select_dao import select_user_posts, select_searched_posts, select_dialogs, select_messages
+from app.select_dao import select_user_posts, select_searched_posts
 
 
 def get_page():
@@ -33,9 +32,9 @@ def get_next_and_prev(base_url, posts, page, username=""):
 def define_button(user):
     if user != current_user:
         if is_following(current_user, user):
-            return "main.unfollow", _("Unfollow")
-        return "main.follow", _("Follow")
-    return "main.edit_profile", _("Edit")
+            return "main.unfollow", _("Unfollow"), EmptyForm()
+        return "main.follow", _("Follow"), EmptyForm()
+    return "main.edit_profile", _("Edit"), None
 
 
 @bp.before_app_request
@@ -62,7 +61,7 @@ def translate_text():
 @bp.route("/index", methods=["GET", "POST"])
 @login_required
 def index():
-    form = MessageForm()
+    form = PostForm()
     if form.validate_on_submit():
         language = translator.detect(form.message.data).lang
         add_post(form.message.data, current_user, language)
@@ -76,44 +75,6 @@ def index():
         title=_("Home"),
         form=form,
         posts=posts.items,
-        next_url=next_url,
-        prev_url=prev_url
-    )
-
-
-@bp.route("/dialogs")
-@login_required
-def dialogs():
-    page = get_page()
-    dialogs = select_dialogs(page)
-    next_url, prev_url = get_next_and_prev("main.dialogs", dialogs, page)
-    return render_template(
-        "main/dialogs.html",
-        title=_("Messages"),
-        dialogs=dialogs.items,
-        next_url=next_url,
-        prev_url=prev_url
-    )
-
-
-@bp.route("/messages/<username>", methods=["GET", "POST"])
-@login_required
-def messages(username):
-    form = MessageForm()
-    if form.validate_on_submit():
-        language = translator.detect(form.message.data).lang
-        send_message(form.message.data, username, language)
-        flash(_("Your message was sent!"))
-        return redirect(url_for("main.messages", username=username))
-    page = get_page()
-    messages = select_messages(username, page)
-    read_messages(username)
-    next_url, prev_url = get_next_and_prev("main.messages", messages, page, username)
-    return render_template(
-        "main/messages.html",
-        title=_("Messages"),
-        form=form,
-        posts=messages.items,
         next_url=next_url,
         prev_url=prev_url
     )
@@ -163,7 +124,7 @@ def user(username):
     posts = select_user_posts(user, page)
     next_url, prev_url = get_next_and_prev("main.user", posts, page, user.username)
     form = EmptyForm()
-    form_url, form_text = define_button(user)
+    form_url, form_text, write_form = define_button(user)
     return render_template(
         "main/user.html",
         user=user,
@@ -171,6 +132,7 @@ def user(username):
         form_url=form_url,
         form_text=form_text,
         posts=posts.items,
+        write_form=write_form,
         next_url=next_url,
         prev_url=prev_url
     )

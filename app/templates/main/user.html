@@ -18,6 +18,14 @@
                         {{ form.submit(value=form_text, class_='btn btn-default') }}
                     </form>
                 </p>
+                {% if write_form %}
+                <p>
+                    <form action='{{ url_for("chat.write_message", username=user.username) }}' method="get">
+                        {{ write_form.hidden_tag() }}
+                        {{ write_form.submit(value=_("Send message"), class_='btn btn-default') }}
+                    </form>
+                </p>
+                {% endif %}
             </td>
         </tr>
     </table>
