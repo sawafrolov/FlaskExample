@@ -35,6 +35,7 @@ def write_message(username):
     return render_template(
         "chat/write_message.html",
         title=_("Write message to ") + username,
+        username=username,
         form=form
     )
 
