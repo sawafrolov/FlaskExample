@@ -126,7 +126,7 @@ def user(username):
     url, text = define_button(user)
     return render_template(
         "main/user.html",
-        title=_("Profile"),
+        title=_("Profile") + username,
         user=user,
         url=url,
         text=text,
