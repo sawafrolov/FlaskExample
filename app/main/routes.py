@@ -7,26 +7,7 @@ from app.main.forms import EditProfileForm, EmptyForm, PostForm, SearchForm
 from app.dao import add_post, update_last_seen, update_user_profile, is_following, follow_to_user, unfollow_to_user
 from app.select_dao import select_user_by_username, select_all_users, select_current_user_followed_posts
 from app.select_dao import select_user_posts, select_searched_posts
-
-
-def get_page():
-    return request.args.get("page", 1, type=int)
-
-
-def get_next_and_prev(base_url, posts, page, username=""):
-    next_url = None
-    if posts.has_next:
-        if username == "":
-            next_url = url_for(base_url, page=page+1)
-        else:
-            next_url = url_for(base_url, username=username, page=page+1)
-    prev_url = None
-    if posts.has_prev:
-        if username == "":
-            prev_url = url_for(base_url, page=page-1)
-        else:
-            prev_url = url_for(base_url, username=username, page=page-1)
-    return next_url, prev_url
+from app.utils import get_page, get_next_and_prev
 
 
 def define_button(user):

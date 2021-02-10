@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, request, jsonify
+from flask import render_template, flash, redirect, url_for, jsonify
 from flask_login import login_required, current_user
 from flask_babel import _
 from app import translator
@@ -6,26 +6,7 @@ from app.chat import bp
 from app.chat.forms import MessageForm
 from app.dao import send_message, read_messages
 from app.select_dao import select_dialogs, select_messages
-
-
-def get_page():
-    return request.args.get("page", 1, type=int)
-
-
-def get_next_and_prev(base_url, posts, page, username=""):
-    next_url = None
-    if posts.has_next:
-        if username == "":
-            next_url = url_for(base_url, page=page+1)
-        else:
-            next_url = url_for(base_url, username=username, page=page+1)
-    prev_url = None
-    if posts.has_prev:
-        if username == "":
-            prev_url = url_for(base_url, page=page-1)
-        else:
-            prev_url = url_for(base_url, username=username, page=page-1)
-    return next_url, prev_url
+from app.utils import get_page, get_next_and_prev
 
 
 @bp.route("/notifications")
