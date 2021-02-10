@@ -1,5 +1,5 @@
-from flask import render_template, flash, redirect, url_for, request
-from flask_login import login_required
+from flask import render_template, flash, redirect, url_for, request, jsonify
+from flask_login import login_required, current_user
 from flask_babel import _
 from app import translator
 from app.chat import bp
@@ -26,6 +26,14 @@ def get_next_and_prev(base_url, posts, page, username=""):
         else:
             prev_url = url_for(base_url, username=username, page=page-1)
     return next_url, prev_url
+
+
+@bp.route("/notifications")
+@login_required
+def notifications():
+    return jsonify({
+        "count": current_user.not_read
+    })
 
 
 @bp.route("/write_message/<username>")
