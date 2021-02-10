@@ -59,8 +59,6 @@ def add_post(text, author, language):
 def read_messages(username):
     user = select_user_by_username(username)
     dialog = select_dialog(user, current_user)
-    if not dialog.recipient.not_read:
-        dialog.recipient.not_read = 0
     dialog.recipient.not_read -= dialog.not_read
     dialog.not_read = 0
     commit_changes()
@@ -72,8 +70,6 @@ def send_message(text, username, language):
     d = select_dialog(user, current_user)
     d.last_message = datetime.utcnow()
     dialog.not_read += 1
-    if not dialog.recipient.not_read:
-        dialog.recipient.not_read = 0
     dialog.recipient.not_read += 1
     message = Message(body=text, author=current_user, recipient=user, language=language)
     db.session.add(message)
