@@ -74,7 +74,7 @@ def messages(username):
         "chat/messages.html",
         title=_("Messages from ") + username,
         form=form,
-        posts=messages.items,
+        messages=messages.items,
         next_url=next_url,
         prev_url=prev_url
     )
