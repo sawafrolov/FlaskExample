@@ -9,6 +9,7 @@
 {% endblock %}
 
 {% block styles %}
+    {{ super() }}
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='icon.png') }}" />
 {% endblock %}
 
