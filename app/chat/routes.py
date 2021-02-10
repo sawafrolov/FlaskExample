@@ -33,12 +33,9 @@ def get_next_and_prev(base_url, posts, page, username=""):
 def write_message(username):
     form = MessageForm()
     return render_template(
-        "chat/messages.html",
+        "chat/write_message.html",
         title=_("Write message to ") + username,
-        form=form,
-        posts=[],
-        next_url=None,
-        prev_url=None
+        form=form
     )
 
 
