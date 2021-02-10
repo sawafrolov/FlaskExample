@@ -8,6 +8,10 @@
     {% endif %}
 {% endblock %}
 
+{% block styles %}
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='icon.png') }}" />
+{% endblock %}
+
 {% block navbar %}
     <nav class="navbar navbar-default">
         <div class="container">
