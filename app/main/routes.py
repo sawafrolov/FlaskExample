@@ -126,6 +126,7 @@ def user(username):
     url, text = define_button(user)
     return render_template(
         "main/user.html",
+        title=_("Profile"),
         user=user,
         url=url,
         text=text,
@@ -163,7 +164,11 @@ def edit_profile(username):
         return redirect(url_for("main.user", username=current_user.username))
     form.username.data = username
     form.about_me.data = current_user.about_me
-    return render_template("main/edit_profile.html", title=_("Edit Profile"), form=form)
+    return render_template(
+        "main/edit_profile.html",
+        title=_("Edit Profile"),
+        form=form
+    )
 
 
 @bp.route("/follow/<username>", methods=["GET"])
