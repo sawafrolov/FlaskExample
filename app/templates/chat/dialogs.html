@@ -8,9 +8,11 @@
                     <a href="{{ url_for('chat.messages', username=dialog.sender.username) }}">
                         {{ dialog.sender.username }}
                     </a>
-                </td>
-                <td>
-                    {{ dialog.not_read }}
+                    {% if dialog.not_read %}
+                        <span id="message_count" class="badge">
+                            {{ dialog.not_read }}
+                        </span>
+                    {% endif %}
                 </td>
             </tr>
         {% endfor %}
