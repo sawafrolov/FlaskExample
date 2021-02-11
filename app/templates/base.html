@@ -1,7 +1,16 @@
 {% extends 'bootstrap/base.html' %}
 
 {% block title %}
-    {% if title %}{{ title }} - Microblog{% else %}{{ _('Welcome to Microblog') }}{% endif %}
+    {% if title %}
+        {{ title }} - Microblog
+    {% else %}
+        {{ _('Welcome to Microblog') }}
+    {% endif %}
+{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='icon.png') }}" />
 {% endblock %}
 
 {% block navbar %}
@@ -18,7 +27,20 @@
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li><a href="{{ url_for('main.index') }}">{{ _('Home') }}</a></li>
+                    <li>
+                        <a href="{{ url_for('chat.dialogs') }}">
+                            {{ _('Messages') }}
+                            <span id="message_count"
+                                  class="badge"
+                                  style="visibility:
+                                    {% if current_user.not_read %}visible
+                                    {% else %}hidden
+                                    {% endif %};"
+                            >
+                                {{ current_user.not_read }}
+                            </span>
+                        </a>
+                    </li>
                     <li><a href="{{ url_for('main.explore') }}">{{ _('Explore') }}</a></li>
                 </ul>
                 {% if g.search_form %}
@@ -122,5 +144,19 @@
                 }
             );
         });
+
+        {% if current_user.is_authenticated %}
+        $(function() {
+            setInterval(function() {
+                $.ajax('{{ url_for('chat.notifications') }}').done(
+                    function(data) {
+                        var n = data.count;
+                        $('#message_count').text(n);
+                        $('#message_count').css('visibility', n ? 'visible' : 'hidden');
+                    }
+                );
+            }, 1000);
+        });
+        {% endif %}
     </script>
 {% endblock %}

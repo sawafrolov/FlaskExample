@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <table class="table table-hover">
+        <thead>
+            <td></td>
+            <td>{{ _('Username') }}</td>
+            <td>{{ _('About') }}</td>
+        </thead>
+        {% for user in users %}
+            <tr>
+                <td width="70px">
+                    <a href="{{ url_for('main.user', username=user.username) }}">
+                        <img src="{{ user.avatar(70) }}" />
+                    </a>
+                </td>
+                <td>
+                    <span class="user_popup">
+                        <a href="{{ url_for('main.user', username=user.username) }}">
+                            {{ user.username }}
+                        </a>
+                    </span>
+                </td>
+                <td>
+                    {% if user.about_me %}
+                        <p>{{ user.about_me }}</p>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% include 'prev_and_next.html' %}
+{% endblock %}

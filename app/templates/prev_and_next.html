@@ -1,0 +1,20 @@
+<nav>
+    {% if prev_url %}
+        <ul class="nav navbar-nav">
+            <li>
+                <a class="btn btn-primary" href="{{ prev_url }}" role="button">
+                    {{ _("Newer") }}
+                </a>
+            </li>
+        </ul>
+    {% endif %}
+    {% if next_url %}
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a class="btn btn-primary" href="{{ next_url }}" role="button">
+                    {{ _("Elder") }}
+                </a>
+            </li>
+        </ul>
+    {% endif %}
+</nav>

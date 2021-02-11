@@ -56,11 +56,43 @@ class User(UserMixin, db.Model):
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+    not_read = db.Column(db.Integer, default=0)
+
     followed = db.relationship(
         'User', secondary=followers,
         primaryjoin=(followers.c.follower_id == id),
         secondaryjoin=(followers.c.followed_id == id),
-        backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
+        backref=db.backref('followers', lazy='dynamic'),
+        lazy='dynamic'
+    )
+
+    messages_sent = db.relationship(
+        'Message',
+        foreign_keys='Message.sender_id',
+        backref='author',
+        lazy='dynamic'
+    )
+
+    messages_received = db.relationship(
+        'Message',
+        foreign_keys='Message.recipient_id',
+        backref='recipient',
+        lazy='dynamic'
+    )
+
+    dialogs = db.relationship(
+        'Dialog',
+        foreign_keys='Dialog.recipient_id',
+        backref='recipient',
+        lazy='dynamic'
+    )
+
+    dialogs_send = db.relationship(
+        'Dialog',
+        foreign_keys='Dialog.sender_id',
+        backref='sender',
+        lazy='dynamic'
+    )
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -87,6 +119,31 @@ class Post(SearchableMixin, db.Model):
 
     def __repr__(self):
         return '<Post {}>'.format(self.body)
+
+
+class Message(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    body = db.Column(db.String(140))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    language = db.Column(db.String(15))
+
+    def __repr__(self):
+        return '<Message {}>'.format(self.body)
+
+
+class Dialog(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    not_read = db.Column(db.Integer, default=0)
+    last_message = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+
+    def __repr__(self):
+        return '<Dialog {} with {}>'.format(self.sender_id, self.recipient_id)
 
 
 db.event.listen(db.session, 'before_commit', SearchableMixin.before_commit)

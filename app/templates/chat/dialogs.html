@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <table class="table table-hover">
+        {% for dialog in dialogs %}
+            <tr>
+                <td>
+                    <a href="{{ url_for('chat.messages', username=dialog.sender.username) }}">
+                        {{ dialog.sender.username }}
+                    </a>
+                    {% if dialog.not_read %}
+                        <span id="message_count" class="badge">
+                            {{ dialog.not_read }}
+                        </span>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% include 'prev_and_next.html' %}
+{% endblock %}

@@ -3,30 +3,11 @@ from flask_login import current_user, login_required
 from flask_babel import _, get_locale
 from app import translator
 from app.main import bp
-from app.main.forms import EmptyForm, PostForm, EditProfileForm, SearchForm
+from app.main.forms import EditProfileForm, EmptyForm, PostForm, SearchForm
 from app.dao import add_post, update_last_seen, update_user_profile, is_following, follow_to_user, unfollow_to_user
-from app.select_dao import select_user_by_username, select_all_posts, select_user_followed_posts
+from app.select_dao import select_user_by_username, select_all_users, select_current_user_followed_posts
 from app.select_dao import select_user_posts, select_searched_posts
-
-
-def get_page():
-    return request.args.get("page", 1, type=int)
-
-
-def get_next_and_prev(base_url, posts, page, username=""):
-    next_url = None
-    if posts.has_next:
-        if username == "":
-            next_url = url_for(base_url, page=page+1)
-        else:
-            next_url = url_for(base_url, username=username, page=page+1)
-    prev_url = None
-    if posts.has_prev:
-        if username == "":
-            prev_url = url_for(base_url, page=page-1)
-        else:
-            prev_url = url_for(base_url, username=username, page=page-1)
-    return next_url, prev_url
+from app.utils import get_page, get_next_and_prev
 
 
 def define_button(user):
@@ -63,12 +44,12 @@ def translate_text():
 def index():
     form = PostForm()
     if form.validate_on_submit():
-        language = translator.detect(form.post.data).lang
-        add_post(form.post.data, current_user, language)
+        language = translator.detect(form.message.data).lang
+        add_post(form.message.data, current_user, language)
         flash(_("Your post was published!"))
         return redirect(url_for("main.index"))
     page = get_page()
-    posts = select_user_followed_posts(current_user, page)
+    posts = select_current_user_followed_posts(page)
     next_url, prev_url = get_next_and_prev("main.index", posts, page)
     return render_template(
         "main/index.html",
@@ -84,12 +65,12 @@ def index():
 @login_required
 def explore():
     page = get_page()
-    posts = select_all_posts(page)
-    next_url, prev_url = get_next_and_prev("main.explore", posts, page)
+    users = select_all_users(page)
+    next_url, prev_url = get_next_and_prev("main.explore", users, page)
     return render_template(
-        "main/index.html",
+        "main/explore.html",
         title=_("Explore"),
-        posts=posts.items,
+        users=users.items,
         next_url=next_url,
         prev_url=prev_url
     )
@@ -99,7 +80,7 @@ def explore():
 @login_required
 def search():
     if not g.search_form.validate():
-        return redirect(url_for("main.explore"))
+        return redirect(url_for("main.index"))
     page = get_page()
     posts, total = select_searched_posts(g.search_form.q.data, page)
     next_url, prev_url = get_next_and_prev("main.search", posts, page)
@@ -123,14 +104,13 @@ def user(username):
     page = get_page()
     posts = select_user_posts(user, page)
     next_url, prev_url = get_next_and_prev("main.user", posts, page, user.username)
-    form = EmptyForm()
-    form_url, form_text = define_button(user)
+    url, text = define_button(user)
     return render_template(
         "main/user.html",
+        title=_("Profile") + username,
         user=user,
-        form=form,
-        form_url=form_url,
-        form_text=form_text,
+        url=url,
+        text=text,
         posts=posts.items,
         next_url=next_url,
         prev_url=prev_url
@@ -165,7 +145,11 @@ def edit_profile(username):
         return redirect(url_for("main.user", username=current_user.username))
     form.username.data = username
     form.about_me.data = current_user.about_me
-    return render_template("main/edit_profile.html", title=_("Edit Profile"), form=form)
+    return render_template(
+        "main/edit_profile.html",
+        title=_("Edit Profile"),
+        form=form
+    )
 
 
 @bp.route("/follow/<username>", methods=["GET"])
