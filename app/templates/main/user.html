@@ -13,6 +13,11 @@
                 <p>{{ user.followers.count() }} {{ _('followers') }}</p>
                 <p>{{ user.followed.count() }} {{ _('following') }}</p>
                 {% include 'main/user_buttons.html' %}
+                <p>
+                    <form action="{{ url_for('auth.del_user') }}" method="post">
+                        <input type="submit" class="btn btn-primary" value="{{ _('Delete profile') }}" />
+                    </form>
+                </p>
             </td>
         </tr>
     </table>
