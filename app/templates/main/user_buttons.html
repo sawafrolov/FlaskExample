@@ -1,15 +1,15 @@
 {% if user != current_user %}
     {% if is_follow %}
         <p>
-            <a class="btn btn-primary" href="{{ url_for('main.unfollow', username=user.username) }}" role="button">
-                {{ _("Unfollow") }}
-            </a>
+            <form action="{{ url_for('main.unfollow', username=user.username) }}" method="post">
+                <input type="submit" class="btn btn-primary" value="{{ _('Unfollow') }}" />
+            </form>
         </p>
     {% else %}
         <p>
-            <a class="btn btn-primary" href="{{ url_for('main.follow', username=user.username) }}" role="button">
-                {{ _("Follow") }}
-            </a>
+            <form action="{{ url_for('main.follow', username=user.username) }}" method="post">
+                <input type="submit" class="btn btn-primary" value="{{ _('Follow') }}" />
+            </form>
         </p>
     {% endif %}
     <p>

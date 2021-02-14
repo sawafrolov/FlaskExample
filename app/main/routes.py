@@ -134,25 +134,27 @@ def edit_profile():
     )
 
 
-@bp.route("/follow/<username>", methods=["GET"])
+@bp.route("/follow/<username>", methods=["POST"])
 @login_required
 def follow(username):
     user = select_user_by_username(username)
     if user == current_user:
         flash(_("You cannot follow yourself!"))
         return redirect(url_for("main.user", username=username))
-    follow_to_user(current_user, user)
-    flash(_("You are following %(username)s!", username=username))
+    follow_to_user(user)
+    flash(_("You are following ") + username)
     return redirect(url_for("main.user", username=username))
 
 
-@bp.route("/unfollow/<username>", methods=["GET"])
+@bp.route("/unfollow/<username>", methods=["POST"])
 @login_required
 def unfollow(username):
     user = select_user_by_username(username)
     if user == current_user:
         flash(_("You cannot unfollow yourself!"))
         return redirect(url_for("main.user", username=username))
-    unfollow_to_user(current_user, user)
-    flash(_("You are not following %(username)s.", username=username))
+    unfollow_to_user(user)
+    flash(_("You are not following ") + username)
     return redirect(url_for("main.user", username=username))
+
+
