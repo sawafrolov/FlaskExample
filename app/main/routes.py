@@ -138,9 +138,6 @@ def edit_profile():
 @login_required
 def follow(username):
     user = select_user_by_username(username)
-    if user is None:
-        flash(_("User %(username)s not found.", username=username))
-        return redirect(url_for("main.index"))
     if user == current_user:
         flash(_("You cannot follow yourself!"))
         return redirect(url_for("main.user", username=username))
@@ -153,9 +150,6 @@ def follow(username):
 @login_required
 def unfollow(username):
     user = select_user_by_username(username)
-    if user is None:
-        flash(_("User %(username)s not found.", username=username))
-        return redirect(url_for("main.index"))
     if user == current_user:
         flash(_("You cannot unfollow yourself!"))
         return redirect(url_for("main.user", username=username))
