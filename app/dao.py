@@ -16,6 +16,11 @@ def create_user(username, password, email):
     commit_changes()
 
 
+def delete_user(user):
+    db.session.delete(user)
+    commit_changes()
+
+
 def update_last_seen(user):
     user.last_seen = datetime.utcnow()
     commit_changes()
