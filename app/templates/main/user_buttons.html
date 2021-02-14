@@ -1,0 +1,26 @@
+{% if user != current_user %}
+    {% if is_follow %}
+        <p>
+            <a class="btn btn-primary" href="{{ url_for('main.unfollow', username=user.username) }}" role="button">
+                {{ _("Unfollow") }}
+            </a>
+        </p>
+    {% else %}
+        <p>
+            <a class="btn btn-primary" href="{{ url_for('main.follow', username=user.username) }}" role="button">
+                {{ _("Follow") }}
+            </a>
+        </p>
+    {% endif %}
+    <p>
+        <a class="btn btn-primary" href="{{ url_for('chat.write_message', username=user.username) }}" role="button">
+            {{ _("Send message") }}
+        </a>
+    </p>
+{% else %}
+    <p>
+        <a class="btn btn-primary" href="{{ url_for('main.edit_profile', username=user.username) }}" role="button">
+            {{ _("Edit") }}
+        </a>
+    </p>
+{% endif %}

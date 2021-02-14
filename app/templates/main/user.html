@@ -12,24 +12,7 @@
                 {% endif %}
                 <p>{{ user.followers.count() }} {{ _('followers') }}</p>
                 <p>{{ user.followed.count() }} {{ _('following') }}</p>
-                <p>
-                    <a class="btn btn-primary"
-                       href="{{ url_for(url, username=user.username) }}"
-                       role="button"
-                    >
-                        {{ text }}
-                    </a>
-                </p>
-                {% if user != current_user %}
-                    <p>
-                        <a class="btn btn-primary"
-                           href="{{ url_for('chat.write_message', username=user.username) }}"
-                           role="button"
-                        >
-                            {{ _("Send message") }}
-                        </a>
-                    </p>
-                {% endif %}
+                {% include 'main/user_buttons.html' %}
             </td>
         </tr>
     </table>

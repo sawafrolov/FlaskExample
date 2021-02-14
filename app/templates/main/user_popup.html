@@ -7,12 +7,7 @@
                 {% if user.about_me %}
                     <p>{{ user.about_me }}</p>
                 {% endif %}
-                <p>
-                    <form action="{{ url_for(form_url, username=user.username) }}" method="get">
-                        {{ form.hidden_tag() }}
-                        {{ form.submit(value=form_text, class_='btn btn-default') }}
-                    </form>
-                </p>
+                {% include 'main/user_buttons.html' %}
             </small>
         </td>
     </tr>
