@@ -4,9 +4,10 @@ from flask_babel import _, get_locale
 from app import translator
 from app.main import bp
 from app.main.forms import EditProfileForm, EmptyForm, PostForm, SearchForm
-from app.dao import add_post, update_last_seen, update_user_profile, is_following, follow_to_user, unfollow_to_user
-from app.select_dao import select_user_by_username, select_all_users, select_current_user_followed_posts
-from app.select_dao import select_user_posts, select_searched_posts
+from app.dao import add_post, delete_post, update_last_seen, update_user_profile
+from app.dao import is_following, follow_to_user, unfollow_to_user
+from app.select_dao import select_user_by_username, select_post_by_id, select_all_users
+from app.select_dao import select_current_user_followed_posts, select_user_posts, select_searched_posts
 from app.utils import get_page, get_next_and_prev
 
 
@@ -94,11 +95,13 @@ def user(username):
     posts = select_user_posts(user, page)
     next_url, prev_url = get_next_and_prev("main.user", posts, page, user.username)
     is_follow = is_following(user)
+    is_current = user == current_user
     return render_template(
         "main/user.html",
         title=_("Profile ") + username,
         user=user,
         is_follow=is_follow,
+        is_current=is_current,
         posts=posts.items,
         next_url=next_url,
         prev_url=prev_url
@@ -158,3 +161,11 @@ def unfollow(username):
     return redirect(url_for("main.user", username=username))
 
 
+@bp.route("/delete_post/<post_id>", methods=["POST"])
+@login_required
+def del_post(post_id):
+    post = select_post_by_id(post_id)
+    if post.author == current_user:
+        delete_post(post)
+        flash(_("You are deleted post!"))
+    return redirect(url_for("main.user", username=current_user.username))

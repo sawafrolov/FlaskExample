@@ -56,6 +56,11 @@ def add_post(text, author, language):
     commit_changes()
 
 
+def delete_post(post):
+    db.session.delete(post)
+    commit_changes()
+
+
 def read_messages(username):
     user = select_user_by_username(username)
     dialog = select_dialog(user, current_user)

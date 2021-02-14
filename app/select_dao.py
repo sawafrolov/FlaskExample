@@ -37,6 +37,10 @@ def select_user_by_email(email):
     return User.query.filter_by(email=email).first_or_404()
 
 
+def select_post_by_id(id):
+    return Post.query.get(int(id))
+
+
 def select_current_user_followed_posts(page):
     posts = Post.query.join(
         followers, (followers.c.followed_id == Post.user_id)
