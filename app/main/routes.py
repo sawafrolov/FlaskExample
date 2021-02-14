@@ -3,7 +3,7 @@ from flask_login import current_user, login_required
 from flask_babel import _, get_locale
 from app import translator
 from app.main import bp
-from app.main.forms import EditProfileForm, EmptyForm, PostForm, SearchForm
+from app.main.forms import EditProfileForm, PostForm, SearchForm
 from app.dao import add_post, delete_post, update_last_seen, update_user_profile
 from app.dao import is_following, follow_to_user, unfollow_to_user
 from app.select_dao import select_user_by_username, select_post_by_id, select_all_users
