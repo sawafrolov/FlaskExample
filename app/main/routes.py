@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, request, jsonify, g
+from flask import current_app, render_template, flash, redirect, url_for, request, jsonify, g
 from flask_login import current_user, login_required
 from flask_babel import _, get_locale
 from app import translator
@@ -17,6 +17,12 @@ def before_request():
         update_last_seen(current_user)
         g.search_form = SearchForm()
     g.locale = str(get_locale())
+
+
+@bp.route("/change_language/<lang>")
+def change_language(lang):
+    current_app.language = lang
+    return redirect(url_for("main.index"))
 
 
 @bp.route("/translate", methods=["POST"])

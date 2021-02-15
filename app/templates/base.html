@@ -56,11 +56,19 @@
                 {% endif %}
                 <ul class="nav navbar-nav navbar-right">
                     {% if current_user.is_anonymous %}
-                    <li><a href="{{ url_for('auth.login') }}">{{ _('Login') }}</a></li>
+                        <li><a href="{{ url_for('auth.login') }}">{{ _('Login') }}</a></li>
                     {% else %}
-                    <li><a href="{{ url_for('main.user', username=current_user.username) }}">{{ _('Profile') }}</a></li>
-                    <li><a href="{{ url_for('auth.logout') }}">{{ _('Logout') }}</a></li>
+                        <li><a href="{{ url_for('main.user', username=current_user.username) }}">{{ _('Profile') }}</a></li>
+                        <li><a href="{{ url_for('auth.logout') }}">{{ _('Logout') }}</a></li>
                     {% endif %}
+                    <select>
+                        <option selected="selected">
+                            <a href="{{ url_for('main.change_language', lang='en') }}">English</a>
+                        </option>
+                        <option>
+                            <a href="{{ url_for('main.change_language', lang='ru') }}">Русский</a>
+                        </option>
+                    </select>
                 </ul>
             </div>
         </div>
