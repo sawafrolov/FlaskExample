@@ -9,6 +9,7 @@ from googletrans import Translator
 from app.elasticsearch import enable_elasticsearch
 
 
+language = ""
 db = SQLAlchemy()
 login = LoginManager()
 login.login_view = "auth.login"
@@ -24,6 +25,7 @@ def create_app(config_file="config"):
 
     app = Flask(__name__)
     app.config.from_object(config_file)
+    language = app.config["DEFAULT_LANGUAGE"]
     db.init_app(app)
     login.init_app(app)
     bootstrap.init_app(app)
@@ -49,4 +51,4 @@ def create_app(config_file="config"):
 
 @babel.localeselector
 def get_locale():
-    return "ru"
+    return language
