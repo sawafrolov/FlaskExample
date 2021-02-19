@@ -16,6 +16,11 @@ def create_user(username, password, email):
     commit_changes()
 
 
+def delete_user(user):
+    db.session.delete(user)
+    commit_changes()
+
+
 def update_last_seen(user):
     user.last_seen = datetime.utcnow()
     commit_changes()
@@ -32,27 +37,32 @@ def change_password(user, password):
     commit_changes()
 
 
-def is_following(user1, user2):
-    return user1.followed.filter(
-        followers.c.followed_id == user2.id
+def is_following(user):
+    return current_user.followed.filter(
+        followers.c.followed_id == user.id
     ).count() > 0
 
 
-def follow_to_user(user1, user2):
-    if not is_following(user1, user2):
-        user1.followed.append(user2)
+def follow_to_user(user):
+    if not is_following(user):
+        current_user.followed.append(user)
         commit_changes()
 
 
-def unfollow_to_user(user1, user2):
-    if is_following(user1, user2):
-        user1.followed.remove(user2)
+def unfollow_to_user(user):
+    if is_following(user):
+        current_user.followed.remove(user)
         commit_changes()
 
 
 def add_post(text, author, language):
     post = Post(body=text, author=author, language=language)
     db.session.add(post)
+    commit_changes()
+
+
+def delete_post(post):
+    db.session.delete(post)
     commit_changes()
 
 

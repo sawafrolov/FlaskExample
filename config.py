@@ -1,11 +1,12 @@
 import os
 import email_config
 
-LANGUAGES = ['en', 'ru']
-basedir = os.path.abspath(os.path.dirname(__file__))
+
+DEFAULT_LANGUAGE = "en"
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 SECRET_KEY = "you-shall-not-pass"
-SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
-SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
+SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'app.db')
+SQLALCHEMY_MIGRATE_REPO = os.path.join(BASE_DIR, 'db_repository')
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 POSTS_PER_PAGE = 10
 ELASTICSEARCH_URL = "http://localhost:9200"

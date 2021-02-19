@@ -1,0 +1,26 @@
+{% if user != current_user %}
+    {% if is_follow %}
+        <p>
+            <form action="{{ url_for('main.unfollow', username=user.username) }}" method="post">
+                <input type="submit" class="btn btn-primary" value="{{ _('Unfollow') }}" />
+            </form>
+        </p>
+    {% else %}
+        <p>
+            <form action="{{ url_for('main.follow', username=user.username) }}" method="post">
+                <input type="submit" class="btn btn-primary" value="{{ _('Follow') }}" />
+            </form>
+        </p>
+    {% endif %}
+    <p>
+        <a class="btn btn-primary" href="{{ url_for('chat.write_message', username=user.username) }}" role="button">
+            {{ _("Send message") }}
+        </a>
+    </p>
+{% else %}
+    <p>
+        <a class="btn btn-primary" href="{{ url_for('main.edit_profile') }}" role="button">
+            {{ _("Edit") }}
+        </a>
+    </p>
+{% endif %}

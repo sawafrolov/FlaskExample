@@ -1,21 +1,20 @@
-from flask import render_template, flash, redirect, url_for, request, jsonify, g
+from flask import current_app, render_template, flash, redirect, url_for, request, jsonify, g
 from flask_login import current_user, login_required
 from flask_babel import _, get_locale
 from app import translator
 from app.main import bp
-from app.main.forms import EditProfileForm, EmptyForm, PostForm, SearchForm
-from app.dao import add_post, update_last_seen, update_user_profile, is_following, follow_to_user, unfollow_to_user
-from app.select_dao import select_user_by_username, select_all_users, select_current_user_followed_posts
-from app.select_dao import select_user_posts, select_searched_posts
+from app.main.forms import EditProfileForm, PostForm, SearchForm
+from app.dao import add_post, delete_post, update_last_seen, update_user_profile
+from app.dao import is_following, follow_to_user, unfollow_to_user
+from app.select_dao import select_user_by_username, select_post_by_id, select_all_users
+from app.select_dao import select_current_user_followed_posts, select_user_posts, select_searched_posts
 from app.utils import get_page, get_next_and_prev
 
 
-def define_button(user):
-    if user != current_user:
-        if is_following(current_user, user):
-            return "main.unfollow", _("Unfollow")
-        return "main.follow", _("Follow")
-    return "main.edit_profile", _("Edit")
+languages = {
+    "en": "English",
+    "ru": "Русский"
+}
 
 
 @bp.before_app_request
@@ -23,7 +22,15 @@ def before_request():
     if current_user.is_authenticated:
         update_last_seen(current_user)
         g.search_form = SearchForm()
-    g.locale = str(get_locale())
+    loc = str(get_locale())
+    g.locale = loc
+    g.language = languages[loc]
+
+
+@bp.route("/change_language/<lang>")
+def change_language(lang):
+    current_app.language = lang
+    return redirect(url_for("main.index"))
 
 
 @bp.route("/translate", methods=["POST"])
@@ -98,19 +105,17 @@ def search():
 @login_required
 def user(username):
     user = select_user_by_username(username)
-    if user is None:
-        flash(_("User %(username)s not found.", username=username))
-        return redirect(url_for("main.index"))
     page = get_page()
     posts = select_user_posts(user, page)
     next_url, prev_url = get_next_and_prev("main.user", posts, page, user.username)
-    url, text = define_button(user)
+    is_follow = is_following(user)
+    is_current = user == current_user
     return render_template(
         "main/user.html",
-        title=_("Profile") + username,
+        title=_("Profile ") + username,
         user=user,
-        url=url,
-        text=text,
+        is_follow=is_follow,
+        is_current=is_current,
         posts=posts.items,
         next_url=next_url,
         prev_url=prev_url
@@ -121,29 +126,23 @@ def user(username):
 @login_required
 def user_popup(username):
     user = select_user_by_username(username)
-    form = EmptyForm()
-    form_url, form_text = define_button(user)
+    is_follow = is_following(user)
     return render_template(
         "main/user_popup.html",
         user=user,
-        form=form,
-        form_url=form_url,
-        form_text=form_text
+        is_follow=is_follow
     )
 
 
-@bp.route("/edit_profile/<username>", methods=["GET", "POST"])
+@bp.route("/edit_profile", methods=["GET", "POST"])
 @login_required
-def edit_profile(username):
-    if username != current_user.username:
-        flash(_("System error: This is not your username."))
-        return redirect(url_for("main.index"))
+def edit_profile():
     form = EditProfileForm(current_user.username)
     if form.validate_on_submit():
         update_user_profile(current_user, form.username.data, form.about_me.data)
         flash(_("Your changes have been saved."))
         return redirect(url_for("main.user", username=current_user.username))
-    form.username.data = username
+    form.username.data = current_user.username
     form.about_me.data = current_user.about_me
     return render_template(
         "main/edit_profile.html",
@@ -152,31 +151,35 @@ def edit_profile(username):
     )
 
 
-@bp.route("/follow/<username>", methods=["GET"])
+@bp.route("/follow/<username>", methods=["POST"])
 @login_required
 def follow(username):
     user = select_user_by_username(username)
-    if user is None:
-        flash(_("User %(username)s not found.", username=username))
-        return redirect(url_for("main.index"))
     if user == current_user:
         flash(_("You cannot follow yourself!"))
         return redirect(url_for("main.user", username=username))
-    follow_to_user(current_user, user)
-    flash(_("You are following %(username)s!", username=username))
+    follow_to_user(user)
+    flash(_("You are following ") + username)
     return redirect(url_for("main.user", username=username))
 
 
-@bp.route("/unfollow/<username>", methods=["GET"])
+@bp.route("/unfollow/<username>", methods=["POST"])
 @login_required
 def unfollow(username):
     user = select_user_by_username(username)
-    if user is None:
-        flash(_("User %(username)s not found.", username=username))
-        return redirect(url_for("main.index"))
     if user == current_user:
         flash(_("You cannot unfollow yourself!"))
         return redirect(url_for("main.user", username=username))
-    unfollow_to_user(current_user, user)
-    flash(_("You are not following %(username)s.", username=username))
+    unfollow_to_user(user)
+    flash(_("You are not following ") + username)
     return redirect(url_for("main.user", username=username))
+
+
+@bp.route("/delete_post/<post_id>", methods=["POST"])
+@login_required
+def del_post(post_id):
+    post = select_post_by_id(post_id)
+    if post.author == current_user:
+        delete_post(post)
+        flash(_("You are deleted post!"))
+    return redirect(url_for("main.user", username=current_user.username))

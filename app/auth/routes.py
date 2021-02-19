@@ -1,10 +1,10 @@
 from flask import render_template, redirect, url_for, flash, request
-from flask_login import current_user, login_user, logout_user
+from flask_login import current_user, login_user, logout_user, login_required
 from flask_babel import _
 from app import login
 from app.auth import bp
 from app.auth.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm, ResetPasswordForm
-from app.dao import create_user, change_password
+from app.dao import create_user, delete_user, change_password
 from app.select_dao import select_user_by_id, select_user_by_username, select_user_by_email
 from app.auth.reset_password import send_password_reset_email, verify_reset_password_token
 
@@ -72,6 +72,16 @@ def reset_password(token):
     form = ResetPasswordForm()
     if form.validate_on_submit():
         change_password(user, form.password.data)
-        flash(_("Your password has been reset."))
+        flash(_("Your password has been reset"))
         return redirect(url_for("auth.login"))
     return render_template("auth/reset_password.html", form=form)
+
+
+@bp.route("/delete_user", methods=["POST"])
+@login_required
+def del_user():
+    user = select_user_by_id(current_user.id)
+    logout_user()
+    delete_user(user)
+    flash(_("Your profile has been deleted"))
+    return redirect(url_for("main.index"))

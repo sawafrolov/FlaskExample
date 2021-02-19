@@ -12,24 +12,12 @@
                 {% endif %}
                 <p>{{ user.followers.count() }} {{ _('followers') }}</p>
                 <p>{{ user.followed.count() }} {{ _('following') }}</p>
+                {% include 'main/user_buttons.html' %}
                 <p>
-                    <a class="btn btn-primary"
-                       href="{{ url_for(url, username=user.username) }}"
-                       role="button"
-                    >
-                        {{ text }}
-                    </a>
+                    <form action="{{ url_for('auth.del_user') }}" method="post">
+                        <input type="submit" class="btn btn-primary" value="{{ _('Delete account') }}" />
+                    </form>
                 </p>
-                {% if user != current_user %}
-                    <p>
-                        <a class="btn btn-primary"
-                           href="{{ url_for('chat.write_message', username=user.username) }}"
-                           role="button"
-                        >
-                            {{ _("Send message") }}
-                        </a>
-                    </p>
-                {% endif %}
             </td>
         </tr>
     </table>
