@@ -11,12 +11,20 @@ from app.select_dao import select_current_user_followed_posts, select_user_posts
 from app.utils import get_page, get_next_and_prev
 
 
+languages = {
+    "en": "English",
+    "ru": "Русский"
+}
+
+
 @bp.before_app_request
 def before_request():
     if current_user.is_authenticated:
         update_last_seen(current_user)
         g.search_form = SearchForm()
-    g.locale = str(get_locale())
+    loc = str(get_locale())
+    g.locale = loc
+    g.language = languages[loc]
 
 
 @bp.route("/change_language/<lang>")
